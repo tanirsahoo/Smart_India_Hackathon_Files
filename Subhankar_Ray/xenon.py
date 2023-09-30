@@ -73,21 +73,21 @@ class ViewWindow(Window,Win_frames):
         super().window_res()
 
     class FirewallPolicy:
-        def enable_ufw():
+        def enable_ufw(self):
             try:
                 subprocess.run(["sudo", "ufw", "enable"], check=True)
                 print("UFW enabled.")
             except subprocess.CalledProcessError as e:
                 print(f"Error enabling UFW: {e}")
 
-        def allow_ssh():
+        def allow_ssh(self):
             try:
                 subprocess.run(["sudo", "ufw", "allow", "OpenSSH"], check=True)
                 print("SSH access allowed.")
             except subprocess.CalledProcessError as e:
                 print(f"Error allowing SSH: {e}")
 
-        def allow_custom_ports(ports):
+        def allow_custom_ports(self,ports):
             for port in ports:
                 try:
                     subprocess.run(["sudo", "ufw", "allow", str(port)], check=True)
