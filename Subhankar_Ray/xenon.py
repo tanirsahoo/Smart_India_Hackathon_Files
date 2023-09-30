@@ -5,6 +5,22 @@ import subprocess
 
 win=Tk()
 
+class Preconfig:
+    def auto_config_tk(self):
+    # Check if python3-tk is already installed
+    try:
+        subprocess.run(["python3", "-c", "import tkinter"], check=True)
+        print("python3-tk is already installed.")
+    except subprocess.CalledProcessError:
+        # If an error occurred, it means tkinter is not installed, so we'll try to install it
+        try:
+            subprocess.run(["sudo", "apt", "update"], check=True)
+            subprocess.run(["sudo", "apt", "install", "-y", "python3-tk"], check=True)
+            print("python3-tk has been installed.")
+        except subprocess.CalledProcessError:
+            print("Failed to install python3-tk. Please check your internet connection or try manually.")
+
+    
 class Window:
     def __init__(self):
         self.width=500
@@ -17,6 +33,7 @@ class Window:
         win.minsize(self.width, self.height)
         win.title(self.title)
         win.configure(bg="#FFFFFF")
+
 
 class Win_frames(ABC):
     def frames_gen(self, k, bd, wd, ht):
@@ -39,6 +56,7 @@ class Win_buttons(ABC):
 
     def button_del(self,obj):
         obj.destroy()
+
 
 class AuthWindow(Window,Win_frames,Win_buttons):
     def __init__(self):
@@ -132,5 +150,9 @@ class ViewWindow(Window,Win_frames):
 
 
 if __name__=="__main__":
+    #Pop-Up Configuration
+    Preconfig().auto_config_tk()
     AuthWindow().frames_pos()
     win.mainloop()
+
+
