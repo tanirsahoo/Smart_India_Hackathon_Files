@@ -125,7 +125,7 @@ class ViewWindow(Window,Win_frames):
         pol.allow_ssh()
 
         # Define additional ports to allow (e.g., 80 for HTTP, 443 for HTTPS)
-        pol.custom_ports = [80, 443]
+        custom_ports = [80, 443]
 
         # Allow custom ports
         pol.allow_custom_ports(custom_ports)
