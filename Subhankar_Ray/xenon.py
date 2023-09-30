@@ -115,7 +115,7 @@ class ViewWindow(Window,Win_frames):
         print("Password Policy Script")
 
     def secure_ssh(self):
-        pol = Policy()
+        pol = FirewallPolicy()
 
         print("Secure shell ssh")
         # Enable UFW
