@@ -72,25 +72,6 @@ class ViewWindow(Window,Win_frames):
         super().__init__()
         super().window_res()
 
-    def frames_pos(self):
-        self.text_list = ["Password Chk", "Blocking SSH"]
-        self.frames_list = self.frames_gen(2,1,400,400)
-        self.frames_list[0].pack(side="top", expand = False)
-        self.frames_list[1].pack(side="top", expand = False)
-        print("Frame positioned")
-        self.button_create(self.frames_list , self.text_list, "#FFFFFF")
-
-    def button_create(self ,f ,t ,bcl):
-        btn1 = Button(f[0] ,text=t[0] ,bg=bcl ,command = lambda: self.pass_script())
-        btn1.pack()
-        btn2 = Button(f[1], text=t[1] ,bg=bcl ,command = lambda: self.secure_ssh())
-        btn2.pack()
-        Button(f[0], text="Delete_btn", bg =bcl, command = lambda: self.button_del(btn1)).pack()
-        Button(f[1], text="Delete_btn", bg =bcl, command = lambda: self.button_del(btn2)).pack()
-
-    def pass_script(self):
-        print("Password Policy Script")
-
     class Policy:
         def enable_ufw():
             try:
@@ -114,6 +95,24 @@ class ViewWindow(Window,Win_frames):
                 except subprocess.CalledProcessError as e:
                     print(f"Error allowing port {port}: {e}")
 
+    def frames_pos(self):
+        self.text_list = ["Password Chk", "Blocking SSH"]
+        self.frames_list = self.frames_gen(2,1,400,400)
+        self.frames_list[0].pack(side="top", expand = False)
+        self.frames_list[1].pack(side="top", expand = False)
+        print("Frame positioned")
+        self.button_create(self.frames_list , self.text_list, "#FFFFFF")
+
+    def button_create(self ,f ,t ,bcl):
+        btn1 = Button(f[0] ,text=t[0] ,bg=bcl ,command = lambda: self.pass_script())
+        btn1.pack()
+        btn2 = Button(f[1], text=t[1] ,bg=bcl ,command = lambda: self.secure_ssh())
+        btn2.pack()
+        Button(f[0], text="Delete_btn", bg =bcl, command = lambda: self.button_del(btn1)).pack()
+        Button(f[1], text="Delete_btn", bg =bcl, command = lambda: self.button_del(btn2)).pack()
+
+    def pass_script(self):
+        print("Password Policy Script")
 
     def secure_ssh(self):
         pol = Policy()
