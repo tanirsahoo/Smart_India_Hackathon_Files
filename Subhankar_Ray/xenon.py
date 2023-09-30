@@ -72,7 +72,7 @@ class ViewWindow(Window,Win_frames):
         super().__init__()
         super().window_res()
 
-    class Policy:
+    class FirewallPolicy:
         def enable_ufw():
             try:
                 subprocess.run(["sudo", "ufw", "enable"], check=True)
