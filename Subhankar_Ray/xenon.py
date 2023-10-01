@@ -72,11 +72,34 @@ class Win_buttons(ABC):
     def button_del(self,obj):
         obj.destroy()
 
-class AuthWindow(Window,Win_frames,Win_buttons):
+class Win_label(ABC):
+    @abstractmethod
+    def label_pos(self):
+        pass
+
+    def label_del(self,obj):
+        obj.destroy()
+
+class Win_entry(ABC):
+    def entry_cre(self ,fr ,k, ft, hlb, hlt):
+        elist=[]
+        for i in (1,k+1):
+            elist.append(Entry(fr, font = k, highlightbackground = hlb, highlightthickness = hlt))
+        return elist
+
+    @abstractmethod
+    def entry_pos(self):
+        pass
+
+    def entry_del(self,obj):
+        obj.destroy()
+
+
+
+class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
     def __init__(self):
         super().__init__()
         super().window_res()
-        self.frames_list=[]
     
 
     def child_frames_pos(self):
@@ -92,15 +115,23 @@ class AuthWindow(Window,Win_frames,Win_buttons):
 
         self.design_frames_list[1].pack(side="top", expand=False)
         self.design_frames_list[1].pack_propagate(0)
-
-
         print("Frame positioned")
+        
+        self.entry_pos()
+        
         self.button_create(self.frames_list[0] ,"Sign In", "#FFFFFF")
+        print("Button positioned")
     
+    def entry_pos(self):
+        self.entry_list = self.entry_cre(self.frames_list[0], 1, "Bitter", "#CDCDCD", 1)
+        self.entry_list[0].pack()
+        self.entry_list[0].place(anchor = 'center', relx = 0.5, rely = 0.3)
+        print("Entry positioned")
+
     def button_create(self ,f ,t ,bcl):
         btn1 = Button(f ,text=t ,bg=bcl ,command = lambda: self.auth_script())
         btn1.pack()
-        btn1.place(anchor = 'center', relx = 0.5, rely = 0.5)
+        btn1.place(anchor = 'center', relx = 0.5, rely = 0.6)
 
     def auth_script(self):
         #Auth-Script
@@ -142,11 +173,17 @@ class ViewWindow(Window,Win_frames):
     def child_frames_pos(self):
         self.main_frame_gen()
         self.text_list = ["Password Chk", "Blocking SSH"]
-        self.frames_list = self.child_frames_gen(2,1,400,400, "#080808")
-        self.frames_list[0].pack(side="top", expand = False)
-        self.frames_list[1].pack(side="top", expand = False)
+        
+        self.design_frames_list = self.child_frames_gen(1, 1, self.height, 0.3*self.width, "#008080")
+        self.design_frames_list[0].pack(side="left")
+        self.design_frames_list[0].pack_propagate(0)
+        
+        self.frames_list = self.child_frames_gen(1, 1, self.height, 0.7*self.width, "#FFFFFF")
+        self.frames_list[0].pack(side="left")
+        self.frames_list[0].pack_propagate(0)
+        
         print("Frame positioned")
-        self.button_create(self.frames_list , self.text_list, "#FFFFFF")
+        #self.button_create(self.frames_list , self.text_list, "#FFFFFF")
 
     def button_create(self ,f ,t ,bcl):
         btn1 = Button(f[0] ,text=t[0] ,bg=bcl ,command = lambda: self.pass_script())
