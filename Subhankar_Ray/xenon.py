@@ -63,8 +63,8 @@ class Win_frames(ABC,ShareVar):
     def child_frames_gen(self, k, f, bd, ht, wd, cl):
         flist=[]
         for i in range(1,k+1):
-            flist.append(Frame(self.main_frame, bg=cl ,borderwidth=bd, relief=SUNKEN, width=wd, height=ht))
-        return flis
+            flist.append(Frame(f[0], bg=cl ,borderwidth=bd, relief=SUNKEN, width=wd, height=ht))
+        return flist
     
 
     @abstractmethod
@@ -231,25 +231,35 @@ class PolWindow(Window,Win_frames):
         self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), "#FFFFFF")
         self.frames_list[0].pack(side="left", expand = True, fill = BOTH)
         self.frames_list[0].pack_propagate(0)
+
+        print(type(self.frames_list))
+        self.grid_frames_list = self.child_frames_gen(9, self.frames_list, 1, self.height, int(0.7*self.width), "#FFFFFF")
+        
+        count = 0
+        for r in range(0,3):
+            for col in range(0,3):
+                self.grid_frames_list[count].grid(row = r, column = col)
+                count = count + 1
+        
         
         print("Frame positioned")
-        self.button_create(self.frames_list , "Policy", "#FFFFFF")
+        self.button_create(self.grid_frames_list , "Policy", "#FFFFFF")
 
     def button_create(self ,f ,t ,bcl):
         self.btn = []
 
-        self.btn.append(Button(f[0], text=t+"1" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "2" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "3" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "4" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "5" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "6" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "7" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "8" ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[0], text=t + "9" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
 
         for cursor in range(0,9):
-            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 2)
+            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 5, padx = 5)
 
 
     def secure_ssh(self):
