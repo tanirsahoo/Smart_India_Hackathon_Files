@@ -61,8 +61,12 @@ class Win_frames(ABC,ShareVar):
     def child_frames_pos(self):
         pass
 
-    def child_frames_del(self,obj):
-        obj.destroy()
+    def child_frames_del(self,obj_list):
+        for obj in obj_list:
+            obj.destroy()
+
+    def main_frame_del(self):
+        self.main_frame.destroy()
 
 class Win_buttons(ABC):
     @abstractmethod
@@ -104,8 +108,8 @@ class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
 
     def child_frames_pos(self):
         self.main_frame_gen()
-        self.design_frames_list = self.child_frames_gen(2,1,int(0.2*self.height),self.width, "#008080")
-        self.frames_list = self.child_frames_gen(1,1,300,self.width, "#FFFFFF")
+        self.design_frames_list = self.child_frames_gen(2, 1, 0.2*self.height, self.width, "#008080")
+        self.frames_list = self.child_frames_gen(1, 1, 300, self.width, "#FFFFFF")
 
         self.design_frames_list[0].pack(side="top", expand=False)
         self.design_frames_list[0].pack_propagate(0)
@@ -119,7 +123,7 @@ class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
         
         self.entry_pos()
         
-        self.button_create(self.frames_list[0] ,"Sign In", "#FFFFFF")
+        self.button_create(self.frames_list[0] ,"Login", "#FFFFFF")
         print("Button positioned")
     
     def entry_pos(self):
@@ -139,10 +143,47 @@ class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
         z = 1
         if z:
             print("Authenticated")
-            self.child_frames_del(self.frames_list[0])
+            self.child_frames_del(self.design_frames_list)
+            self.child_frames_del(self.frames_list)
+            self.main_frame_del()
             ViewWindow().child_frames_pos()
 
 class ViewWindow(Window,Win_frames):
+    def __init__(self):
+        super().__init__()
+        super().window_res()
+
+    def child_frames_pos(self):
+        self.main_frame_gen()
+
+        self.design_frames_list = self.child_frames_gen(1, 1, self.height, 0.3*self.width, "#008080")
+        self.design_frames_list[0].pack(side="left")
+        self.design_frames_list[0].pack_propagate(0)
+        
+        self.frames_list = self.child_frames_gen(1, 1, self.height, 0.7*self.width, "#FFFFFF")
+        self.frames_list[0].pack(side="left")
+        self.frames_list[0].pack_propagate(0)
+        
+        print("Frame positioned")
+        self.button_create(self.frames_list , "Policies", "#FFFFFF")
+
+    def button_create(self ,f ,t ,bcl):
+        btn1 = Button(f[0] ,text=t ,bg=bcl ,command = lambda: self.policy())
+        btn1.pack(side = "bottom")
+
+
+    def policy(self):
+        print("Go to Policy Frame")
+        z=1
+        if z:
+
+            self.child_frames_del(self.design_frames_list)
+            self.child_frames_del(self.frames_list)
+            self.main_frame_del()
+            PolWindow().child_frames_pos()
+            
+
+class PolWindow(Window,Win_frames):
     def __init__(self):
         super().__init__()
         super().window_res()
