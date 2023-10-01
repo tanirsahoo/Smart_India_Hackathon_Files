@@ -64,7 +64,7 @@ class Window(ShareVar):
 class Win_frames(ABC,ShareVar):
     def main_frame_gen(self):
         self.main_frame=Frame(win ,bg="#808080" ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
-        self.main_frame.pack(fill = tk.BOTH, expand = True)
+        self.main_frame.pack(fill = BOTH, expand = True)
         self.main_frame.pack_propagate(0)
         self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
     
