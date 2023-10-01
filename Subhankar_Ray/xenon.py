@@ -1,12 +1,3 @@
-import tkinter as tk
-from tkinter import *
-from tkinter import ttk
-from abc import ABC , abstractmethod
-from multipledispatch import dispatch
-import subprocess
-
-win=tk.Tk()
-
 class Preconfig:
     def auto_config_tk(self):
         print("Config-Chk")
@@ -25,6 +16,16 @@ class Preconfig:
                 print("Failed to install python3-tk. Please check your internet connection or try manually.")
                 """
 
+Preconfig().auto_config_tk()
+
+import tkinter as tk
+from tkinter import *
+from tkinter import ttk
+from abc import ABC , abstractmethod
+from multipledispatch import dispatch
+import subprocess
+
+win=tk.Tk()
 
 
 class ShareVar:
@@ -248,18 +249,18 @@ class PolWindow(Window,Win_frames):
     def button_create(self ,f ,t ,bcl):
         self.btn = []
 
-        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
-        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
 
         for cursor in range(0,9):
-            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 5, padx = 5)
+            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
 
 
     def secure_ssh(self):
@@ -284,7 +285,6 @@ class PolWindow(Window,Win_frames):
 
 if __name__=="__main__":
     #Pop-Up Configuration
-    Preconfig().auto_config_tk()
     AuthWindow().child_frames_pos()
     win.mainloop()
 
