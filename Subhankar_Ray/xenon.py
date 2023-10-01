@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from abc import ABC , abstractmethod
+from multipledispatch import dispatch
 import subprocess
 
 win=tk.Tk()
@@ -50,12 +51,21 @@ class Win_frames(ABC,ShareVar):
         self.main_frame.pack(fill = tk.BOTH, expand = True)
         self.main_frame.pack_propagate(0)
         self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
-        
+    
+    @dispatch(int ,int ,int ,int ,str)
     def child_frames_gen(self, k, bd, ht, wd, cl):
         flist=[]
         for i in range(1,k+1):
             flist.append(Frame(self.main_frame, bg=cl ,borderwidth=bd, relief=SUNKEN, width=wd, height=ht))
         return flist
+    
+    @dispatch(int ,list ,int ,int ,int ,str)
+    def child_frames_gen(self, k, f, bd, ht, wd, cl):
+        flist=[]
+        for i in range(1,k+1):
+            flist.append(Frame(self.main_frame, bg=cl ,borderwidth=bd, relief=SUNKEN, width=wd, height=ht))
+        return flis
+    
 
     @abstractmethod
     def child_frames_pos(self):
@@ -108,7 +118,7 @@ class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
 
     def child_frames_pos(self):
         self.main_frame_gen()
-        self.design_frames_list = self.child_frames_gen(2, 1, 0.2*self.height, self.width, "#008080")
+        self.design_frames_list = self.child_frames_gen(2, 1, int(0.2*self.height), self.width, "#008080")
         self.frames_list = self.child_frames_gen(1, 1, 300, self.width, "#FFFFFF")
 
         self.design_frames_list[0].pack(side="top", expand=False)
@@ -156,11 +166,11 @@ class ViewWindow(Window,Win_frames):
     def child_frames_pos(self):
         self.main_frame_gen()
 
-        self.design_frames_list = self.child_frames_gen(1, 1, self.height, 0.3*self.width, "#008080")
+        self.design_frames_list = self.child_frames_gen(1, 1, self.height, int(0.3*self.width), "#008080")
         self.design_frames_list[0].pack(side="left")
         self.design_frames_list[0].pack_propagate(0)
         
-        self.frames_list = self.child_frames_gen(1, 1, self.height, 0.7*self.width, "#FFFFFF")
+        self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), "#FFFFFF")
         self.frames_list[0].pack(side="left")
         self.frames_list[0].pack_propagate(0)
         
@@ -213,29 +223,34 @@ class PolWindow(Window,Win_frames):
 
     def child_frames_pos(self):
         self.main_frame_gen()
-        self.text_list = ["Password Chk", "Blocking SSH"]
         
-        self.design_frames_list = self.child_frames_gen(1, 1, self.height, 0.3*self.width, "#008080")
+        self.design_frames_list = self.child_frames_gen(1, 1, self.height, int(0.3*self.width), "#008080")
         self.design_frames_list[0].pack(side="left")
         self.design_frames_list[0].pack_propagate(0)
         
-        self.frames_list = self.child_frames_gen(1, 1, self.height, 0.7*self.width, "#FFFFFF")
-        self.frames_list[0].pack(side="left")
+        self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), "#FFFFFF")
+        self.frames_list[0].pack(side="left", expand = True, fill = BOTH)
         self.frames_list[0].pack_propagate(0)
         
         print("Frame positioned")
-        #self.button_create(self.frames_list , self.text_list, "#FFFFFF")
+        self.button_create(self.frames_list , "Policy", "#FFFFFF")
 
     def button_create(self ,f ,t ,bcl):
-        btn1 = Button(f[0] ,text=t[0] ,bg=bcl ,command = lambda: self.pass_script())
-        btn1.pack()
-        btn2 = Button(f[1], text=t[1] ,bg=bcl ,command = lambda: self.secure_ssh())
-        btn2.pack()
-        Button(f[0], text="Delete_btn", bg =bcl, command = lambda: self.button_del(btn1)).pack()
-        Button(f[1], text="Delete_btn", bg =bcl, command = lambda: self.button_del(btn2)).pack()
+        self.btn = []
 
-    def pass_script(self):
-        print("Password Policy Script")
+        self.btn.append(Button(f[0], text=t+"1" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "2" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "3" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "4" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "5" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "6" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "7" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "8" ,bg=bcl ,command = lambda: self.secure_ssh()))
+        self.btn.append(Button(f[0], text=t + "9" ,bg=bcl ,command = lambda: self.secure_ssh()))
+
+        for cursor in range(0,9):
+            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 2)
+
 
     def secure_ssh(self):
         pol = self.FirewallPolicy()
