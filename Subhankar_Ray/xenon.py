@@ -1,3 +1,7 @@
+
+import pkg_resources
+import subprocess
+
 class Preconfig:
     def auto_config_tk(self):
         print("Config-Chk")
@@ -16,16 +20,27 @@ class Preconfig:
                 print("Failed to install python3-tk. Please check your internet connection or try manually.")
                 """
 
-Preconfig().auto_config_tk()
+    def package_config(self,package_name):
+        try:
+            pkg_resources.get_distribution(package_name)
+        except pkg_resources.DistributionNotFound:
+            try:
+                subprocess.check_call(["pip3", "install", package_name])
+                print(f"{package_name} has been successfully installed.")
+            except subprocess.CalledProcessError as e:
+                print(f"Error installing {package_name}: {e}")
 
-import tkinter as tk
+Preconfig().auto_config_tk()
+Preconfig().package_config(package_name = "multipledispatch")
+
+import tkinter
 from tkinter import *
 from tkinter import ttk
 from abc import ABC , abstractmethod
 from multipledispatch import dispatch
-import subprocess
 
-win=tk.Tk()
+
+win=Tk()
 
 
 class ShareVar:
@@ -287,5 +302,7 @@ if __name__=="__main__":
     #Pop-Up Configuration
     AuthWindow().child_frames_pos()
     win.mainloop()
+
+
 
 
