@@ -78,6 +78,7 @@ class WinFrame(ABC,SharedSpace):
         self.main_frame.pack(fill = BOTH, expand = True)
         self.main_frame.pack_propagate(0)
         self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
+        return self.main_frame
     
     @dispatch(int ,int ,int ,int ,str)
     def child_frame_gen(self, frame_count, borderwidth, height, width, color):
@@ -92,8 +93,7 @@ class WinFrame(ABC,SharedSpace):
         for i in range(1,frame_count+1):
             gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
         return gen_frame_list
-    
-
+        
     @abstractmethod
     def child_frame_pos(self):
         pass
@@ -121,11 +121,11 @@ class WinLabel(ABC):
     def label_del(self,obj):
         obj.destroy()
 
-class WinEntry(ABC):
-    def entry_cre(self ,frame ,frame_count, font, hlb, hlt):
+class WinEntry(ABC, ColorPalette):
+    def entry_cre(self ,frame ,frame_count, font, hlb, hlt, color):
         entry_list=[]
         for i in range(1, frame_count+1):
-            entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt))
+            entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt, fg = color))
         return entry_list
 
     @abstractmethod
@@ -135,6 +135,10 @@ class WinEntry(ABC):
     def entry_del(self,obj):
         obj.destroy()
 
+    @abstractmethod
+    def entry_erase(self,obj):
+        pass        
+
 class WinRadial(ABC):
     @abstractmethod
     def radial_cre(self):
@@ -143,6 +147,14 @@ class WinRadial(ABC):
     def radial_del(self,obj_list):
         for obj in obj_list:
             obj.destroy()
+
+class WinMenu(ABC):
+    @abstractmethod
+    def menu_cre(self):
+        pass
+
+    def menu_del(self, obj):
+        obj.destroy()
 
 class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
     def __init__(self):
@@ -172,22 +184,31 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
         self.button_cre(self.frame_list[0] ,"Login", self.white)
         print("Button positioned")
     
+
+
     def entry_pos(self):
-        self.entry_list = self.entry_cre(self.frame_list[0], 3, "Bitter", self.entry_color, 1)
+        self.entry_list = self.entry_cre(self.frame_list[0], 3, "Bitter", self.entry_color, 1, "#808080")
         
         self.entry_list[0].insert(0,"Username")
+        self.entry_list[0].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[0]))
         self.entry_list[0].pack()
         self.entry_list[0].place(anchor = 'center', relx = 0.5, rely = 0.2)
         
         self.entry_list[1].insert(0,"Role")
+        self.entry_list[1].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[1]))
         self.entry_list[1].pack()
         self.entry_list[1].place(anchor = 'center', relx = 0.5, rely = 0.4)
 
         self.entry_list[2].insert(0,"Password")
+        self.entry_list[2].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[2]))
         self.entry_list[2].pack()
         self.entry_list[2].place(anchor = 'center', relx = 0.5, rely = 0.6)
 
         print("Entry positioned")
+
+    def entry_erase(self,obj):
+        obj.delete(0, "end")
+        obj.configure(fg = self.black)
 
     def button_cre(self ,f ,t ,bcl):
         btn1 = Button(f ,text=t ,bg=bcl ,command = lambda: self.auth_exe())
@@ -205,7 +226,7 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,WinFrame, ColorPalette):
+class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -213,35 +234,35 @@ class Orchestrate(Window,WinFrame, ColorPalette):
         super().get_s_color()
 
     def child_frame_pos(self):
-        self.main_frame_gen()
+        self.main_frame = self.main_frame_gen()
 
-        self.design_frame_list = self.child_frame_gen(1, 1, self.height, int(0.3*self.width), self.design_color)
+
+        self.design_frame_list = self.child_frame_gen(1, 1, 500, int(0.3*self.width), self.design_color)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
-        self.frame_list = self.child_frame_gen(1, 1, self.height, int(0.7*self.width), self.white)
+        self.frame_list = self.child_frame_gen(1, 1, 500, int(0.7*self.width), self.white)
         self.frame_list[0].pack(side="left")
         self.frame_list[0].pack_propagate(0)
         
         print("Frame positioned")
-        self.button_cre(self.frame_list , "Policies", self.white)
+        self.menu_cre()
 
-    def button_cre(self ,f ,t ,bcl):
-        btn1 = Button(f[0] ,text=t ,bg=bcl ,command = lambda: self.orchs_exe())
-        btn1.pack(side = "bottom")
+    def menu_cre(self):
+        self.menu_obj = Menu(self.main_frame)
+        m_first = Menu(self.menu_obj, tearoff = 0)
+        m_first.add_command(label = "Orchestrate")
+        m_first.add_command(label = "Policies", command = lambda: self.orchs_exe())
 
     #def radial_cre(self ,f):
 
 
     def orchs_exe(self):
         print("Go to Policy Frame")
-        z=1
-        if z:
-
-            self.child_frame_del(self.design_frame_list)
-            self.child_frame_del(self.frame_list)
-            self.main_frame_del()
-            EnforcePol().child_frame_pos()
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        EnforcePol().child_frame_pos()
 
 class EnforcePol(Window,WinFrame, ColorPalette):
     def __init__(self):
