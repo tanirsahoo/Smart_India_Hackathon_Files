@@ -123,10 +123,10 @@ class WinLabel(ABC):
 
 class WinEntry(ABC):
     def entry_cre(self ,frame ,frame_count, font, hlb, hlt):
-        elist=[]
-        for i in (1,frame_count+1):
-            elist.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt))
-        return elist
+        entry_list=[]
+        for i in range(1, frame_count+1):
+            entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt))
+        return entry_list
 
     @abstractmethod
     def entry_pos(self):
@@ -135,7 +135,14 @@ class WinEntry(ABC):
     def entry_del(self,obj):
         obj.destroy()
 
+class WinRadial(ABC):
+    @abstractmethod
+    def radial_cre(self):
+        pass
 
+    def radial_del(self,obj_list):
+        for obj in obj_list:
+            obj.destroy()
 
 class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
     def __init__(self):
@@ -148,7 +155,7 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
     def child_frame_pos(self):
         self.main_frame_gen()
         self.design_frame_list = self.child_frame_gen(2, 1, int(0.2*self.height), self.width,  self.design_color)
-        self.frame_list = self.child_frame_gen(1, 1, 300, self.width, self.white)
+        self.frame_list = self.child_frame_gen(1, 1, int(0.6*self.height), self.width, self.white)
 
         self.design_frame_list[0].pack(side="top", expand=False)
         self.design_frame_list[0].pack_propagate(0)
@@ -166,15 +173,26 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
         print("Button positioned")
     
     def entry_pos(self):
-        self.entry_list = self.entry_cre(self.frame_list[0], 1, "Bitter", self.entry_color, 1)
+        self.entry_list = self.entry_cre(self.frame_list[0], 3, "Bitter", self.entry_color, 1)
+        
+        self.entry_list[0].insert(0,"Username")
         self.entry_list[0].pack()
-        self.entry_list[0].place(anchor = 'center', relx = 0.5, rely = 0.3)
+        self.entry_list[0].place(anchor = 'center', relx = 0.5, rely = 0.2)
+        
+        self.entry_list[1].insert(0,"Role")
+        self.entry_list[1].pack()
+        self.entry_list[1].place(anchor = 'center', relx = 0.5, rely = 0.4)
+
+        self.entry_list[2].insert(0,"Password")
+        self.entry_list[2].pack()
+        self.entry_list[2].place(anchor = 'center', relx = 0.5, rely = 0.6)
+
         print("Entry positioned")
 
     def button_cre(self ,f ,t ,bcl):
         btn1 = Button(f ,text=t ,bg=bcl ,command = lambda: self.auth_exe())
         btn1.pack()
-        btn1.place(anchor = 'center', relx = 0.5, rely = 0.6)
+        btn1.place(anchor = 'center', relx = 0.5, rely = 0.8)
 
     def auth_exe(self):
         #Auth-Script
@@ -212,6 +230,8 @@ class Orchestrate(Window,WinFrame, ColorPalette):
         btn1 = Button(f[0] ,text=t ,bg=bcl ,command = lambda: self.orchs_exe())
         btn1.pack(side = "bottom")
 
+    #def radial_cre(self ,f):
+
 
     def orchs_exe(self):
         print("Go to Policy Frame")
@@ -222,7 +242,6 @@ class Orchestrate(Window,WinFrame, ColorPalette):
             self.child_frame_del(self.frame_list)
             self.main_frame_del()
             EnforcePol().child_frame_pos()
-            
 
 class EnforcePol(Window,WinFrame, ColorPalette):
     def __init__(self):
