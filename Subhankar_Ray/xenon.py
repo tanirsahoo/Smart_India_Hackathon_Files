@@ -1,4 +1,3 @@
-
 import pkg_resources
 import subprocess
 
@@ -48,22 +47,34 @@ class ShareVar:
         self.height=height
         self.width=width
 
+    def setTitle(self,title):
+        self.title = title
+
+
+class ColorPalette:
+    def get_primary_palette(self):
+        self.black = "#000000"
+        self.white = "#FFFFFF"
+
+    def get_secondary_palette(self):
+        self.design_color = "#008080"
+        self.entry_color = "#CDCDCD"
+
 class Window(ShareVar):
     def __init__(self):
         super().setHeightWidth(500,500)
-        self.title="Xenon"
+        super().setTitle("Xenon")
 
     def window_res(self):
         win.geometry("500x500")
         win.maxsize(self.width, self.height)
         win.minsize(self.width, self.height)
         win.title(self.title)
-        win.configure(bg="#FFFFFF")
 
 
 class Win_frames(ABC,ShareVar):
     def main_frame_gen(self):
-        self.main_frame=Frame(win ,bg="#808080" ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
+        self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
         self.main_frame.pack(fill = BOTH, expand = True)
         self.main_frame.pack_propagate(0)
         self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
@@ -126,16 +137,18 @@ class Win_entry(ABC):
 
 
 
-class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
+class AuthWindow(Window,Win_frames,Win_buttons,Win_entry,ColorPalette):
     def __init__(self):
         super().__init__()
         super().window_res()
+        super().get_primary_palette()
+        super().get_secondary_palette()
     
 
     def child_frames_pos(self):
         self.main_frame_gen()
-        self.design_frames_list = self.child_frames_gen(2, 1, int(0.2*self.height), self.width, "#008080")
-        self.frames_list = self.child_frames_gen(1, 1, 300, self.width, "#FFFFFF")
+        self.design_frames_list = self.child_frames_gen(2, 1, int(0.2*self.height), self.width,  self.design_color)
+        self.frames_list = self.child_frames_gen(1, 1, 300, self.width, self.white)
 
         self.design_frames_list[0].pack(side="top", expand=False)
         self.design_frames_list[0].pack_propagate(0)
@@ -149,11 +162,11 @@ class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
         
         self.entry_pos()
         
-        self.button_create(self.frames_list[0] ,"Login", "#FFFFFF")
+        self.button_create(self.frames_list[0] ,"Login", self.white)
         print("Button positioned")
     
     def entry_pos(self):
-        self.entry_list = self.entry_cre(self.frames_list[0], 1, "Bitter", "#CDCDCD", 1)
+        self.entry_list = self.entry_cre(self.frames_list[0], 1, "Bitter", self.entry_color, 1)
         self.entry_list[0].pack()
         self.entry_list[0].place(anchor = 'center', relx = 0.5, rely = 0.3)
         print("Entry positioned")
@@ -174,24 +187,26 @@ class AuthWindow(Window,Win_frames,Win_buttons,Win_entry):
             self.main_frame_del()
             ViewWindow().child_frames_pos()
 
-class ViewWindow(Window,Win_frames):
+class ViewWindow(Window,Win_frames, ColorPalette):
     def __init__(self):
         super().__init__()
         super().window_res()
+        super().get_primary_palette()
+        super().get_secondary_palette()
 
     def child_frames_pos(self):
         self.main_frame_gen()
 
-        self.design_frames_list = self.child_frames_gen(1, 1, self.height, int(0.3*self.width), "#008080")
+        self.design_frames_list = self.child_frames_gen(1, 1, self.height, int(0.3*self.width), self.design_color)
         self.design_frames_list[0].pack(side="left")
         self.design_frames_list[0].pack_propagate(0)
         
-        self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), "#FFFFFF")
+        self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), self.white)
         self.frames_list[0].pack(side="left")
         self.frames_list[0].pack_propagate(0)
         
         print("Frame positioned")
-        self.button_create(self.frames_list , "Policies", "#FFFFFF")
+        self.button_create(self.frames_list , "Policies", self.white)
 
     def button_create(self ,f ,t ,bcl):
         btn1 = Button(f[0] ,text=t ,bg=bcl ,command = lambda: self.policy())
@@ -209,10 +224,12 @@ class ViewWindow(Window,Win_frames):
             PolWindow().child_frames_pos()
             
 
-class PolWindow(Window,Win_frames):
+class PolWindow(Window,Win_frames, ColorPalette):
     def __init__(self):
         super().__init__()
         super().window_res()
+        super().get_primary_palette()
+        super().get_secondary_palette()
 
     class FirewallPolicy:
         def enable_ufw(self):
@@ -240,16 +257,16 @@ class PolWindow(Window,Win_frames):
     def child_frames_pos(self):
         self.main_frame_gen()
         
-        self.design_frames_list = self.child_frames_gen(1, 1, self.height, int(0.3*self.width), "#008080")
+        self.design_frames_list = self.child_frames_gen(1, 1, self.height, int(0.3*self.width), self.design_color)
         self.design_frames_list[0].pack(side="left")
         self.design_frames_list[0].pack_propagate(0)
         
-        self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), "#FFFFFF")
+        self.frames_list = self.child_frames_gen(1, 1, self.height, int(0.7*self.width), self.white)
         self.frames_list[0].pack(side="left", expand = True, fill = BOTH)
         self.frames_list[0].pack_propagate(0)
 
         print(type(self.frames_list))
-        self.grid_frames_list = self.child_frames_gen(9, self.frames_list, 1, self.height, int(0.7*self.width), "#FFFFFF")
+        self.grid_frames_list = self.child_frames_gen(9, self.frames_list, 1, self.height, int(0.7*self.width), self.white)
         
         count = 0
         for r in range(0,3):
@@ -259,7 +276,7 @@ class PolWindow(Window,Win_frames):
         
         
         print("Frame positioned")
-        self.button_create(self.grid_frames_list , "Policy", "#FFFFFF")
+        self.button_create(self.grid_frames_list , "Policy", self.white)
 
     def button_create(self ,f ,t ,bcl):
         self.btn = []
