@@ -63,7 +63,7 @@ class ColorPalette:
 class Window(SharedSpace):
     def __init__(self):
         super().set_height_width(500,500)
-        super().setTitle("Xenon")
+        super().set_title("Xenon")
 
     def set_res(self):
         win.geometry("500x500")
@@ -83,14 +83,14 @@ class WinFrame(ABC,SharedSpace):
     def child_frame_gen(self, frame_count, borderwidth, height, width, color):
         gen_frame_list = []
         for i in range(1,frame_count+1):
-            flist.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+            gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
         return gen_frame_list
     
     @dispatch(int ,list ,int ,int ,int ,str)
     def child_frame_gen(self, frame_count, frame_list,  borderwidth, height, width, color):
         gen_frame_list=[]
         for i in range(1,frame_count+1):
-            flist.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+            gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
         return gen_frame_list
     
 
@@ -172,7 +172,7 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
         print("Entry positioned")
 
     def button_cre(self ,f ,t ,bcl):
-        btn1 = Button(f ,text=t ,bg=bcl ,command = lambda: self.auth_script())
+        btn1 = Button(f ,text=t ,bg=bcl ,command = lambda: self.auth_exe())
         btn1.pack()
         btn1.place(anchor = 'center', relx = 0.5, rely = 0.6)
 
@@ -187,7 +187,7 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,WinFrames, ColorPalette):
+class Orchestrate(Window,WinFrame, ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -209,7 +209,7 @@ class Orchestrate(Window,WinFrames, ColorPalette):
         self.button_cre(self.frame_list , "Policies", self.white)
 
     def button_cre(self ,f ,t ,bcl):
-        btn1 = Button(f[0] ,text=t ,bg=bcl ,command = lambda: self.orchs())
+        btn1 = Button(f[0] ,text=t ,bg=bcl ,command = lambda: self.orchs_exe())
         btn1.pack(side = "bottom")
 
 
@@ -224,7 +224,7 @@ class Orchestrate(Window,WinFrames, ColorPalette):
             EnforcePol().child_frame_pos()
             
 
-class EnforcePol(Window,WinFrames, ColorPalette):
+class EnforcePol(Window,WinFrame, ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -316,7 +316,7 @@ class EnforcePol(Window,WinFrames, ColorPalette):
 
 if __name__=="__main__":
     #Pop-Up Configuration
-    AuthWindow().child_frames_pos()
+    Authorize().child_frame_pos()
     win.mainloop()
 
 
