@@ -6,4 +6,4 @@
 Tanir Sahoo
 
 # Repository Contributor:
-Subhankar Ray , Sneha Singh , Sukanya Manna , Soumyadeep Samanta , Dyutiprovo Sarkar
+Subhankar Ray <br>Sneha Singh <br>Sukanya Manna <br>Soumyadeep Samanta <br>Dyutiprovo Sarkar
