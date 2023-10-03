@@ -150,7 +150,7 @@ class DIFace:
 
     class WinRadial(ABC):
         @abstractmethod
-        def radial_cre(self):
+        def radial_cre(self,frame,frame_count):
             pass
 
         def radial_del(self,obj_list):
@@ -235,7 +235,7 @@ class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPal
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
+class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,DIFace.WinRadial,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -255,6 +255,7 @@ class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
         self.frame_list[0].pack_propagate(0)
         
         print("Frame positioned")
+        self.radial_cre(self.frame_list[0], 2)
 
     def menu_cre(self):
         menu_obj_1 = Menu(win)
@@ -262,8 +263,18 @@ class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
         menu_obj_1.add_command(label = "Policies", command = lambda: self.orchs_exe())
         win.config(menu = menu_obj_1)
 
-    #def radial_cre(self ,f):
+    def radial_cre(self ,f, k):
+        decision = IntVar()
+        radial_list = []
+        for i in range(1,k+1):
+            radial_list.append(Radiobutton(f, text = "Files", activebackground = self.black, activeforeground = "green", bg = self.white, cursor = "target", value = i, variable = decision, command = lambda: self.decide(decision.get())))
+        
+        radial_list[0].pack(side = "top")
+        radial_list[1].pack(side = "top")
 
+    def decide(self,x):
+        #Logic
+        print(x)
 
     def orchs_exe(self):
         print("Go to Policy Frame")
