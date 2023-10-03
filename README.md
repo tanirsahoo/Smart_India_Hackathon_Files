@@ -7,6 +7,3 @@ Tanir Sahoo
 
 # Repository Contributor:
 Subhankar Ray , Sneha Singh , Sukanya Manna , Soumyadeep Samanta , Dyutiprovo Sarkar
-
-# Todo Task:
-Creating User Guide
