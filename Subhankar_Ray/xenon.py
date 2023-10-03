@@ -71,101 +71,101 @@ class Window(SharedSpace):
         win.minsize(self.width, self.height)
         win.title(self.title)
 
+class DIFace:
+    class WinFrame(ABC,SharedSpace):
+        @dispatch()
+        def main_frame_gen(self):
+            self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
+            self.main_frame.pack(fill = BOTH, expand = True)
+            self.main_frame.pack_propagate(0)
+            self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
+            return self.main_frame
 
-class WinFrame(ABC,SharedSpace):
-    @dispatch()
-    def main_frame_gen(self):
-        self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
-        self.main_frame.pack(fill = BOTH, expand = True)
-        self.main_frame.pack_propagate(0)
-        self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
-        return self.main_frame
-
-    @dispatch(int)
-    def main_frame_gen(self,height_factor):
-        self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height= self.height - height_factor)
-        self.main_frame.pack(fill = BOTH, expand = True)
-        self.main_frame.pack_propagate(0)
-        self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
-        return self.main_frame
+        @dispatch(int)
+        def main_frame_gen(self,height_factor):
+            self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height= self.height - height_factor)
+            self.main_frame.pack(fill = BOTH, expand = True)
+            self.main_frame.pack_propagate(0)
+            self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
+            return self.main_frame
     
-    @dispatch(int ,int ,int ,int ,str)
-    def child_frame_gen(self, frame_count, borderwidth, height, width, color):
-        gen_frame_list = []
-        for i in range(1,frame_count+1):
-            gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
-        return gen_frame_list
+        @dispatch(int ,int ,int ,int ,str)
+        def child_frame_gen(self, frame_count, borderwidth, height, width, color):
+            gen_frame_list = []
+            for i in range(1,frame_count+1):
+                gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+            return gen_frame_list
     
-    @dispatch(int ,list ,int ,int ,int ,str)
-    def child_frame_gen(self, frame_count, frame_list,  borderwidth, height, width, color):
-        gen_frame_list=[]
-        for i in range(1,frame_count+1):
-            gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
-        return gen_frame_list
+        @dispatch(int ,list ,int ,int ,int ,str)
+        def child_frame_gen(self, frame_count, frame_list,  borderwidth, height, width, color):
+            gen_frame_list=[]
+            for i in range(1,frame_count+1):
+                gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+            return gen_frame_list
         
-    @abstractmethod
-    def child_frame_pos(self):
-        pass
+        @abstractmethod
+        def child_frame_pos(self):
+            pass
 
-    def child_frame_del(self,obj_list):
-        for obj in obj_list:
+        def child_frame_del(self,obj_list):
+            for obj in obj_list:
+                obj.destroy()
+
+        def main_frame_del(self):
+            self.main_frame.destroy()
+
+    class WinButton(ABC):
+        @abstractmethod
+        def button_cre(self ,f ,t ,bcl):
+            pass
+
+        def button_del(self,obj):
             obj.destroy()
 
-    def main_frame_del(self):
-        self.main_frame.destroy()
+    class WinLabel(ABC):
+        @abstractmethod
+        def label_pos(self):
+            pass
 
-class WinButton(ABC):
-    @abstractmethod
-    def button_cre(self ,f ,t ,bcl):
-        pass
-
-    def button_del(self,obj):
-        obj.destroy()
-
-class WinLabel(ABC):
-    @abstractmethod
-    def label_pos(self):
-        pass
-
-    def label_del(self,obj):
-        obj.destroy()
-
-class WinEntry(ABC, ColorPalette):
-    def entry_cre(self ,frame ,frame_count, font, hlb, hlt, color):
-        entry_list=[]
-        for i in range(1, frame_count+1):
-            entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt, fg = color))
-        return entry_list
-
-    @abstractmethod
-    def entry_pos(self):
-        pass
-
-    def entry_del(self,obj):
-        obj.destroy()
-
-    @abstractmethod
-    def entry_erase(self,obj):
-        pass        
-
-class WinRadial(ABC):
-    @abstractmethod
-    def radial_cre(self):
-        pass
-
-    def radial_del(self,obj_list):
-        for obj in obj_list:
+        def label_del(self,obj):
             obj.destroy()
 
-class WinMenu(ABC):
-    @abstractmethod
-    def menu_cre(self):
-        pass
+    class WinEntry(ABC, ColorPalette):
+        def entry_cre(self ,frame ,frame_count, font, hlb, hlt, color):
+            entry_list=[]
+            for i in range(1, frame_count+1):
+                entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt, fg = color))
+            return entry_list
 
-    def menu_del(self, obj):
-        obj.destroy()
+        @abstractmethod
+        def entry_pos(self):
+            pass
 
-class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
+        def entry_del(self,obj):
+            obj.destroy()
+
+        @abstractmethod
+        def entry_erase(self,obj):
+            pass        
+
+    class WinRadial(ABC):
+        @abstractmethod
+        def radial_cre(self):
+            pass
+
+        def radial_del(self,obj_list):
+            for obj in obj_list:
+                obj.destroy()
+
+    class WinMenu(ABC):
+        @abstractmethod
+        def menu_cre(self):
+            pass
+
+        def menu_del(self, obj):
+            obj.destroy()
+
+class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -235,7 +235,7 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
+class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -272,7 +272,7 @@ class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,WinFrame,WinMenu,ColorPalette):
+class EnforcePol(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
