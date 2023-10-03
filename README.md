@@ -10,5 +10,3 @@ Subhankar Ray , Sneha Singh , Sukanya Manna , Soumyadeep Samanta , Dyutiprovo Sa
 
 # Todo Task:
 Creating User Guide
-
-# Policies
