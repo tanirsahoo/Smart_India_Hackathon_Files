@@ -165,6 +165,16 @@ class DIFace:
         def menu_del(self, obj):
             obj.destroy()
 
+
+class LIFace:
+    class FSManager(ABC):
+        def is_path_exist(self,path):
+            return
+
+        @abstractmethod
+        def show_inner(self,path):
+            pass
+
 class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPalette):
     def __init__(self):
         super().__init__()
