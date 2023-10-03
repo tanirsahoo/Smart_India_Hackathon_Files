@@ -73,8 +73,17 @@ class Window(SharedSpace):
 
 
 class WinFrame(ABC,SharedSpace):
+    @dispatch()
     def main_frame_gen(self):
         self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
+        self.main_frame.pack(fill = BOTH, expand = True)
+        self.main_frame.pack_propagate(0)
+        self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
+        return self.main_frame
+
+    @dispatch(int)
+    def main_frame_gen(self,height_factor):
+        self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height= self.height - height_factor)
         self.main_frame.pack(fill = BOTH, expand = True)
         self.main_frame.pack_propagate(0)
         self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
@@ -234,25 +243,24 @@ class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
         super().get_s_color()
 
     def child_frame_pos(self):
-        self.main_frame = self.main_frame_gen()
+        self.menu_cre()
+        self.main_frame = self.main_frame_gen(20)
 
-
-        self.design_frame_list = self.child_frame_gen(1, 1, 500, int(0.3*self.width), self.design_color)
+        self.design_frame_list = self.child_frame_gen(1, 1, 480, int(0.3*self.width), self.design_color)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
-        self.frame_list = self.child_frame_gen(1, 1, 500, int(0.7*self.width), self.white)
+        self.frame_list = self.child_frame_gen(1, 1, 480, int(0.7*self.width), self.white)
         self.frame_list[0].pack(side="left")
         self.frame_list[0].pack_propagate(0)
         
         print("Frame positioned")
-        self.menu_cre()
 
     def menu_cre(self):
-        self.menu_obj = Menu(self.main_frame)
-        m_first = Menu(self.menu_obj, tearoff = 0)
-        m_first.add_command(label = "Orchestrate")
-        m_first.add_command(label = "Policies", command = lambda: self.orchs_exe())
+        menu_obj_1 = Menu(win)
+        menu_obj_1.add_command(label = "Orchestrate")
+        menu_obj_1.add_command(label = "Policies", command = lambda: self.orchs_exe())
+        win.config(menu = menu_obj_1)
 
     #def radial_cre(self ,f):
 
@@ -264,7 +272,7 @@ class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,WinFrame, ColorPalette):
+class EnforcePol(Window,WinFrame,WinMenu,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -295,7 +303,8 @@ class EnforcePol(Window,WinFrame, ColorPalette):
                     print(f"Error allowing port {port}: {e}")
 
     def child_frame_pos(self):
-        self.main_frame_gen()
+        self.menu_cre()
+        self.main_frame_gen(20)
         
         self.design_frame_list = self.child_frame_gen(1, 1, self.height, int(0.3*self.width), self.design_color)
         self.design_frame_list[0].pack(side="left")
@@ -316,6 +325,12 @@ class EnforcePol(Window,WinFrame, ColorPalette):
         
         print("Frame positioned")
         self.button_cre(self.grid_frame_list , "Policy", self.white)
+
+    def menu_cre(self):
+        menu_obj_1 = Menu(win)
+        menu_obj_1.add_command(label = "Orchestrate", command = lambda:self.back_orchs_exe())
+        menu_obj_1.add_command(label = "Policies")
+        win.config(menu = menu_obj_1)
 
     def button_cre(self ,f ,t ,bcl):
         self.btn = []
@@ -352,6 +367,12 @@ class EnforcePol(Window,WinFrame, ColorPalette):
         # Allow custom ports
         pol.allow_custom_ports(custom_ports)
         """
+    def back_orchs_exe(self):
+            self.child_frame_del(self.design_frame_list)
+            self.child_frame_del(self.grid_frame_list)
+            self.child_frame_del(self.frame_list)
+            self.main_frame_del()
+            Orchestrate().child_frame_pos()
 
 
 if __name__=="__main__":
