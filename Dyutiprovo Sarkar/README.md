@@ -1,7 +1,7 @@
 # Policies
 name | scripts | status
 -----|---------|--------
-1.Access management | policy(tor script,ssh script) | Confirmed
+1.Access management policy | (tor script,ssh script) | Confirmed
 2.Data protection policy | (password schema,Firewall and other network scripts,Encrytion scripts) | In progress
 3.Hardware policy | (USB script) | Confirmed
 4.IDS policy | LIDS(log based) script | Holding
