@@ -1,1 +1,1 @@
-# Scripts Lisitng
+# Scripts Listing
