@@ -10,3 +10,5 @@ Subhankar Ray
 
 # Todo Task:
 Creating User Guide
+
+# Policies
