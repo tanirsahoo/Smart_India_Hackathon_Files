@@ -71,92 +71,111 @@ class Window(SharedSpace):
         win.minsize(self.width, self.height)
         win.title(self.title)
 
+class DIFace:
+    class WinFrame(ABC,SharedSpace):
+        @dispatch()
+        def main_frame_gen(self):
+            self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
+            self.main_frame.pack(fill = BOTH, expand = True)
+            self.main_frame.pack_propagate(0)
+            self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
+            return self.main_frame
 
-class WinFrame(ABC,SharedSpace):
-    def main_frame_gen(self):
-        self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
-        self.main_frame.pack(fill = BOTH, expand = True)
-        self.main_frame.pack_propagate(0)
-        self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
-        return self.main_frame
+        @dispatch(int)
+        def main_frame_gen(self,height_factor):
+            self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height= self.height - height_factor)
+            self.main_frame.pack(fill = BOTH, expand = True)
+            self.main_frame.pack_propagate(0)
+            self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
+            return self.main_frame
     
-    @dispatch(int ,int ,int ,int ,str)
-    def child_frame_gen(self, frame_count, borderwidth, height, width, color):
-        gen_frame_list = []
-        for i in range(1,frame_count+1):
-            gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
-        return gen_frame_list
+        @dispatch(int ,int ,int ,int ,str)
+        def child_frame_gen(self, frame_count, borderwidth, height, width, color):
+            gen_frame_list = []
+            for i in range(1,frame_count+1):
+                gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+            return gen_frame_list
     
-    @dispatch(int ,list ,int ,int ,int ,str)
-    def child_frame_gen(self, frame_count, frame_list,  borderwidth, height, width, color):
-        gen_frame_list=[]
-        for i in range(1,frame_count+1):
-            gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
-        return gen_frame_list
+        @dispatch(int ,list ,int ,int ,int ,str)
+        def child_frame_gen(self, frame_count, frame_list,  borderwidth, height, width, color):
+            gen_frame_list=[]
+            for i in range(1,frame_count+1):
+                gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+            return gen_frame_list
         
-    @abstractmethod
-    def child_frame_pos(self):
-        pass
+        @abstractmethod
+        def child_frame_pos(self):
+            pass
 
-    def child_frame_del(self,obj_list):
-        for obj in obj_list:
+        def child_frame_del(self,obj_list):
+            for obj in obj_list:
+                obj.destroy()
+
+        def main_frame_del(self):
+            self.main_frame.destroy()
+
+    class WinButton(ABC):
+        @abstractmethod
+        def button_cre(self ,f ,t ,bcl):
+            pass
+
+        def button_del(self,obj):
             obj.destroy()
 
-    def main_frame_del(self):
-        self.main_frame.destroy()
+    class WinLabel(ABC):
+        @abstractmethod
+        def label_pos(self):
+            pass
 
-class WinButton(ABC):
-    @abstractmethod
-    def button_cre(self ,f ,t ,bcl):
-        pass
-
-    def button_del(self,obj):
-        obj.destroy()
-
-class WinLabel(ABC):
-    @abstractmethod
-    def label_pos(self):
-        pass
-
-    def label_del(self,obj):
-        obj.destroy()
-
-class WinEntry(ABC, ColorPalette):
-    def entry_cre(self ,frame ,frame_count, font, hlb, hlt, color):
-        entry_list=[]
-        for i in range(1, frame_count+1):
-            entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt, fg = color))
-        return entry_list
-
-    @abstractmethod
-    def entry_pos(self):
-        pass
-
-    def entry_del(self,obj):
-        obj.destroy()
-
-    @abstractmethod
-    def entry_erase(self,obj):
-        pass        
-
-class WinRadial(ABC):
-    @abstractmethod
-    def radial_cre(self):
-        pass
-
-    def radial_del(self,obj_list):
-        for obj in obj_list:
+        def label_del(self,obj):
             obj.destroy()
 
-class WinMenu(ABC):
-    @abstractmethod
-    def menu_cre(self):
-        pass
+    class WinEntry(ABC, ColorPalette):
+        def entry_cre(self ,frame ,frame_count, font, hlb, hlt, color):
+            entry_list=[]
+            for i in range(1, frame_count+1):
+                entry_list.append(Entry(frame, font = font, highlightbackground = hlb, highlightthickness = hlt, fg = color))
+            return entry_list
 
-    def menu_del(self, obj):
-        obj.destroy()
+        @abstractmethod
+        def entry_pos(self):
+            pass
 
-class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
+        def entry_del(self,obj):
+            obj.destroy()
+
+        @abstractmethod
+        def entry_erase(self,obj):
+            pass        
+
+    class WinRadial(ABC):
+        @abstractmethod
+        def radial_cre(self,frame,frame_count):
+            pass
+
+        def radial_del(self,obj_list):
+            for obj in obj_list:
+                obj.destroy()
+
+    class WinMenu(ABC):
+        @abstractmethod
+        def menu_cre(self):
+            pass
+
+        def menu_del(self, obj):
+            obj.destroy()
+
+
+class LIFace:
+    class FSManager(ABC):
+        def is_path_exist(self,path):
+            return
+
+        @abstractmethod
+        def show_inner(self,path):
+            pass
+
+class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -226,7 +245,7 @@ class Authorize(Window,WinFrame,WinButton,WinEntry,ColorPalette):
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
+class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,DIFace.WinRadial,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -234,28 +253,38 @@ class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
         super().get_s_color()
 
     def child_frame_pos(self):
-        self.main_frame = self.main_frame_gen()
+        self.menu_cre()
+        self.main_frame = self.main_frame_gen(20)
 
-
-        self.design_frame_list = self.child_frame_gen(1, 1, 500, int(0.3*self.width), self.design_color)
+        self.design_frame_list = self.child_frame_gen(1, 1, 480, int(0.3*self.width), self.design_color)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
-        self.frame_list = self.child_frame_gen(1, 1, 500, int(0.7*self.width), self.white)
+        self.frame_list = self.child_frame_gen(1, 1, 480, int(0.7*self.width), self.white)
         self.frame_list[0].pack(side="left")
         self.frame_list[0].pack_propagate(0)
         
         print("Frame positioned")
-        self.menu_cre()
+        self.radial_cre(self.frame_list[0], 2)
 
     def menu_cre(self):
-        self.menu_obj = Menu(self.main_frame)
-        m_first = Menu(self.menu_obj, tearoff = 0)
-        m_first.add_command(label = "Orchestrate")
-        m_first.add_command(label = "Policies", command = lambda: self.orchs_exe())
+        menu_obj_1 = Menu(win)
+        menu_obj_1.add_command(label = "Orchestrate")
+        menu_obj_1.add_command(label = "Policies", command = lambda: self.orchs_exe())
+        win.config(menu = menu_obj_1)
 
-    #def radial_cre(self ,f):
+    def radial_cre(self ,f, k):
+        decision = IntVar()
+        radial_list = []
+        for i in range(1,k+1):
+            radial_list.append(Radiobutton(f, text = "Files", activebackground = self.black, activeforeground = "green", bg = self.white, cursor = "target", value = i, variable = decision, command = lambda: self.decide(decision.get())))
+        
+        radial_list[0].pack(side = "top")
+        radial_list[1].pack(side = "top")
 
+    def decide(self,x):
+        #Logic
+        print(x)
 
     def orchs_exe(self):
         print("Go to Policy Frame")
@@ -264,7 +293,7 @@ class Orchestrate(Window,WinFrame,WinMenu,ColorPalette):
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,WinFrame, ColorPalette):
+class EnforcePol(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -295,7 +324,8 @@ class EnforcePol(Window,WinFrame, ColorPalette):
                     print(f"Error allowing port {port}: {e}")
 
     def child_frame_pos(self):
-        self.main_frame_gen()
+        self.menu_cre()
+        self.main_frame_gen(20)
         
         self.design_frame_list = self.child_frame_gen(1, 1, self.height, int(0.3*self.width), self.design_color)
         self.design_frame_list[0].pack(side="left")
@@ -316,6 +346,12 @@ class EnforcePol(Window,WinFrame, ColorPalette):
         
         print("Frame positioned")
         self.button_cre(self.grid_frame_list , "Policy", self.white)
+
+    def menu_cre(self):
+        menu_obj_1 = Menu(win)
+        menu_obj_1.add_command(label = "Orchestrate", command = lambda:self.back_orchs_exe())
+        menu_obj_1.add_command(label = "Policies")
+        win.config(menu = menu_obj_1)
 
     def button_cre(self ,f ,t ,bcl):
         self.btn = []
@@ -352,6 +388,12 @@ class EnforcePol(Window,WinFrame, ColorPalette):
         # Allow custom ports
         pol.allow_custom_ports(custom_ports)
         """
+    def back_orchs_exe(self):
+            self.child_frame_del(self.design_frame_list)
+            self.child_frame_del(self.grid_frame_list)
+            self.child_frame_del(self.frame_list)
+            self.main_frame_del()
+            Orchestrate().child_frame_pos()
 
 
 if __name__=="__main__":
