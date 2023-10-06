@@ -6,6 +6,9 @@
 5. firewalldis - To disable firewall.
 6. list-user - To list the users created by root and create a sql database
 7. ssh - To enable ssh for a particular user.
+8. create-group - To create a group and add users to a group. The group has a owner and other members. Set owner of a group. Create folders/files for group members to access.
+9. active-user - To show currently active users.
+10. delete-group - T delete created groups
 
 Firewall Functions
 
