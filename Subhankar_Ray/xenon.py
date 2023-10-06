@@ -51,14 +51,12 @@ class SharedSpace:
         self.title = title
 
 
-class ColorPalette:
-    def get_p_color(self):
-        self.black = "#000000"
-        self.white = "#FFFFFF"
+class DIFace:
+    class ColorParameters(ABC):
+        @abstractmethod
+        def color_loader(self):
+            pass
 
-    def get_s_color(self):
-        self.design_color = "#008080"
-        self.entry_color = "#CDCDCD"
 
 class Window(SharedSpace):
     def __init__(self):
@@ -71,7 +69,7 @@ class Window(SharedSpace):
         win.minsize(self.width, self.height)
         win.title(self.title)
 
-class DIFace:
+class LIFace:
     class WinFrame(ABC,SharedSpace):
         @dispatch()
         def main_frame_gen(self):
@@ -130,7 +128,7 @@ class DIFace:
         def label_del(self,obj):
             obj.destroy()
 
-    class WinEntry(ABC, ColorPalette):
+    class WinEntry(ABC):
         def entry_cre(self ,frame ,frame_count, font, hlb, hlt, color):
             entry_list=[]
             for i in range(1, frame_count+1):
@@ -166,7 +164,7 @@ class DIFace:
             obj.destroy()
 
 
-class LIFace:
+class EIFace:
     class FSManager(ABC):
         def is_path_exist(self,path):
             return
@@ -175,17 +173,25 @@ class LIFace:
         def show_inner(self,path):
             pass
 
-class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPalette):
+class Authorize(Window,LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
-        super().get_p_color()
-        super().get_s_color()
     
+    
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
 
     def child_frame_pos(self):
+        self.color_loader()
+
         self.main_frame_gen()
-        self.design_frame_list = self.child_frame_gen(2, 1, int(0.2*self.height), self.width,  self.design_color)
+        self.design_frame_list = self.child_frame_gen(2, 1, int(0.2*self.height), self.width,  self.d_grey)
         self.frame_list = self.child_frame_gen(1, 1, int(0.6*self.height), self.width, self.white)
 
         self.design_frame_list[0].pack(side="top", expand=False)
@@ -198,7 +204,7 @@ class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPal
         self.design_frame_list[1].pack_propagate(0)
         print("Frame positioned")
         
-        self.entry_pos()
+        #self.entry_pos()
         
         self.button_cre(self.frame_list[0] ,"Login", self.white)
         print("Button positioned")
@@ -206,8 +212,8 @@ class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPal
 
 
     def entry_pos(self):
-        self.entry_list = self.entry_cre(self.frame_list[0], 3, "Bitter", self.entry_color, 1, "#808080")
-        
+        self.entry_list = self.entry_cre(self.frame_list[0], 3, "Bitter", self.l_grey, 1, self.grey)
+        '''
         self.entry_list[0].insert(0,"Username")
         self.entry_list[0].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[0]))
         self.entry_list[0].pack()
@@ -222,7 +228,7 @@ class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPal
         self.entry_list[2].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[2]))
         self.entry_list[2].pack()
         self.entry_list[2].place(anchor = 'center', relx = 0.5, rely = 0.6)
-
+        '''
         print("Entry positioned")
 
     def entry_erase(self,obj):
@@ -245,18 +251,25 @@ class Authorize(Window,DIFace.WinFrame,DIFace.WinButton,DIFace.WinEntry,ColorPal
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,DIFace.WinRadial,ColorPalette):
+class Orchestrate(Window,LIFace.WinFrame,LIFace.WinMenu,LIFace.WinRadial,DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
-        super().get_p_color()
-        super().get_s_color()
+    
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
 
     def child_frame_pos(self):
+        self.color_loader()
+
         self.menu_cre()
         self.main_frame = self.main_frame_gen(20)
 
-        self.design_frame_list = self.child_frame_gen(1, 1, 480, int(0.3*self.width), self.design_color)
+        self.design_frame_list = self.child_frame_gen(1, 1, 480, int(0.3*self.width), self.d_grey)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
@@ -293,12 +306,10 @@ class Orchestrate(Window,DIFace.WinFrame,DIFace.WinMenu,DIFace.WinRadial,ColorPa
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
+class EnforcePol(Window,LIFace.WinFrame,LIFace.WinMenu, DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
-        super().get_p_color()
-        super().get_s_color()
 
     class FirewallPolicy:
         def enable_ufw(self):
@@ -323,11 +334,20 @@ class EnforcePol(Window,DIFace.WinFrame,DIFace.WinMenu,ColorPalette):
                 except subprocess.CalledProcessError as e:
                     print(f"Error allowing port {port}: {e}")
 
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
     def child_frame_pos(self):
+        self.color_loader()
+        
         self.menu_cre()
         self.main_frame_gen(20)
         
-        self.design_frame_list = self.child_frame_gen(1, 1, self.height, int(0.3*self.width), self.design_color)
+        self.design_frame_list = self.child_frame_gen(1, 1, self.height, int(0.3*self.width), self.d_grey)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
