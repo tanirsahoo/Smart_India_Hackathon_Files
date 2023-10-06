@@ -11,3 +11,24 @@ sudo chown -R :<<group_name>> /home/<<user_name>>
 sudo chmod -R 770 /home/<<user_name>>
 
 #python script to access user files
+
+#use this to check group-info
+getent group <<group_name>>
+
+#to check owner use
+ls -ld path_to_file/folder
+
+#sub-groups can be created using sub-directories
+sudo groupadd parentgroup
+sudo mkdir path_to_parent/owner dir
+sudo chown: parentgroup path_to_parent dir
+sudo chmod permissions
+
+sudo groupadd subgroup1
+sudo mkdir path_to_parent_to_subdir1
+sudo chown: subgroup1 path_to_parent_to_subdir1
+sudo chmod: permission
+
+so on ... till nth user(who wants to create an organisation structure)
+#sudo usage requires password, however the password use it the user password(admin/his own set os password) and not the root password which is to be remembered
+
