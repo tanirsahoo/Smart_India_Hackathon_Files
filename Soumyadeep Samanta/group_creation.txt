@@ -1,0 +1,13 @@
+#creating groups as admin
+sudo addgroup <<group_name>>
+
+#add users to the group as admin
+sudo usermod -aG <<group_name>> <<user_name>>
+# -aG must becuase it allows the user to be part of more than one group
+
+
+#set group ownership & permission
+sudo chown -R :<<group_name>> /home/<<user_name>>
+sudo chmod -R 770 /home/<<user_name>>
+
+#python script to access user files
