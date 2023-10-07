@@ -1,0 +1,27 @@
+Technology Stack:
+1. Python
+3. Shell Script
+4. MySQL
+5. Docker
+6. GO programming Language (Primarily for Docker and Kubernetes implementation)
+7. Ruby programming language (For using tools like chef and puppet for container orchestration)
+8. JSON (HashiCorp Configuration Language will be converted to JSON for implementing Terraform)
+
+
+Dependencies:
+1. DBeaver (It's a Software we are using to design the tables for our database, Its not a programming language.)
+2. VPS - Virtual Protocol Server (Creating a virtual network so that server could be accessed remotely.)
+3. Ethernet LAN Connection (Connecting the whole organization in a Local Area Network.)
+4. Cloud Server (If someone wants to host their server on Cloud. Eg. Azure , AWS , Google Cloud , etc.)
+5. GUI interfaces for Kubernetes (We would outsource the orchestration part to GUI based third party softwares eg: Portainer , Rancher , Kubespray etc.)
+6. Chef and Puppet (Tools for Container orchestration)
+7. Terraform (Infrastructure as Code - This one is optional. It is used to orchestrate container clusters. (Container Clusters are containers which are managed my multiple devices.))
+
+
+Policies till now:
+1. Access Management --> (TOR Script: Enable and Disable for the whole system, as blocking at individual level is vulnerable. It can and will be done if and only if the judges asks us ; SSH: Enable and Disable for targeted user.)
+2. Data Protection Policy --> (Password schema: Password Salting ; Firewall: Enable and Disable for targeted users ; Encryption Scripts: Hashing and generation of encryption keys)
+3. Hardware policy --> (USB Script: )
+4. IDS Policy --> (LIDS: Theory present, practically not implemented ; NIDS: Unfinished)
+5. Application Whitelisting --> (Use of Third Party Modules in Ubuntu, We need to install these modules (Eg. AppArmour or SELinux) and configure our system using shell script)
+6. Roles and Responsibilities Policy --> (Admin: Multiple Admins could be created ; Users: Multiple Users could be created ; Login Script: Not required as data could be extracted from the system itself.)
