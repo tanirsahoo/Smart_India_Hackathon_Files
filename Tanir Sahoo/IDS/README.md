@@ -8,7 +8,7 @@ First we need to install Rust and Cargo in our system.
 3. Run the following codes as root:
    - apt-get install build-essential git libjansson-dev libpcap-dev \
                 libpcre2-dev libtool libyaml-dev make pkg-config zlib1g-dev
-   - apt-get install cbindgen    (OR)    - cargo install --force cbindgen
+   - apt-get install cbindgen    (OR)    cargo install --force cbindgen
 4. Now run the following code:
    - apt-get install autoconf automake build-essential ccache clang curl git \
                 gosu jq libbpf-dev libcap-ng0 libcap-ng-dev libelf-dev \
