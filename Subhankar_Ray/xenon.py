@@ -52,7 +52,7 @@ class SharedSpace:
 
 
 class DIFace:
-    class ColorParameters(ABC):
+    class ColorParameters(ABC): 
         @abstractmethod
         def color_loader(self):
             pass
@@ -161,6 +161,18 @@ class LIFace:
             pass
 
         def menu_del(self, obj):
+            obj.destroy()
+
+    class WinTextBox(ABC):
+        def textbox_cre(self,frame,ht,wd):
+            obj = Text(frame, height = ht, width = wd)
+            return obj
+
+        @abstractmethod
+        def textbox_pos(self):
+            pass
+
+        def textbox_del(self,obj):
             obj.destroy()
 
 
@@ -306,7 +318,7 @@ class Orchestrate(Window,LIFace.WinFrame,LIFace.WinMenu,LIFace.WinRadial,DIFace.
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,LIFace.WinFrame,LIFace.WinMenu, DIFace.ColorParameters):
+class EnforcePol(Window,LIFace.WinFrame,LIFace.WinMenu,LIFace.WinTextBox,DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -355,17 +367,25 @@ class EnforcePol(Window,LIFace.WinFrame,LIFace.WinMenu, DIFace.ColorParameters):
         self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
         self.frame_list[0].pack_propagate(0)
 
-        self.grid_frame_list = self.child_frame_gen(9, self.frame_list, 1, self.height, int(0.7*self.width), self.white)
+        self.grid_frame_list = self.child_frame_gen(9, self.frame_list, 1, int(0.5*self.height), int(0.7*self.width), self.white)
         
         count = 0
         for r in range(0,3):
             for col in range(0,3):
                 self.grid_frame_list[count].grid(row = r, column = col)
+                self.grid_frame_list[count].propagate(0)
                 count = count + 1
         
         
         print("Frame positioned")
         self.button_cre(self.grid_frame_list , "Policy", self.white)
+        
+        self.textbox_frame_list = self.child_frame_gen(1, self.frame_list, 1, int(0.5*self.height), int(0.7*self.width), self.black)
+        self.textbox_frame_list[0].grid(row = 3, column = 0, columnspan = 3)
+        self.textbox_frame_list[0].grid_propagate(0)
+
+        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 6,42)
+        self.textbox_pos()
 
     def menu_cre(self):
         menu_obj_1 = Menu(win)
@@ -373,18 +393,21 @@ class EnforcePol(Window,LIFace.WinFrame,LIFace.WinMenu, DIFace.ColorParameters):
         menu_obj_1.add_command(label = "Policies")
         win.config(menu = menu_obj_1)
 
+    def textbox_pos(self):
+        self.textbox.pack()
+
     def button_cre(self ,f ,t ,bcl):
         self.btn = []
 
-        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
-        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh() ,padx = 31 ,pady = 40))
+        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
 
         for cursor in range(0,9):
             self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
