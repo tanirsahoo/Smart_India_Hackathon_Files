@@ -1,6 +1,6 @@
 # Smart_India_Hackathon_Files
- This Repository contains files for our project at Smart India Hackathon
-
+ This Repository contains files for our project VigilanT at Smart India Hackathon
+ 
 
 # Repository Creator:
 Tanir Sahoo
