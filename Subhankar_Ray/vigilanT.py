@@ -44,8 +44,7 @@ win=Tk()
 
 
 class DIFace:
-    class ColorParameters(ABC): 
-        @abstractmethod
+    class ColorParameters: 
         def color_loader(self):
             pass
 
@@ -58,7 +57,7 @@ class DIFace:
             self.title = title
 
 
-class Window(DIFace.HeightWidthParameters):
+class Window(DIFace.HeightWidthParameters,DIFace.ColorParameters):
     def __init__(self):
         super().set_height_width(500,500)
         super().set_title("Xenon")
@@ -217,7 +216,7 @@ class LBuilder(LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,LIFace.WinMenu,L
 
 
 
-class Authorize(Window,LBuilder,DIFace.ColorParameters):
+class Authorize(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -295,7 +294,7 @@ class Authorize(Window,LBuilder,DIFace.ColorParameters):
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,LBuilder,DIFace.ColorParameters):
+class Orchestrate(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -350,7 +349,7 @@ class Orchestrate(Window,LBuilder,DIFace.ColorParameters):
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,LBuilder,DIFace.ColorParameters):
+class EnforcePol(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
