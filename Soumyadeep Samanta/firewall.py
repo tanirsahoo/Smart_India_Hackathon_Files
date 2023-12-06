@@ -1,80 +1,53 @@
 import subprocess
 
-def check_firewall_status():
+def enable_firewall():
     try:
-        # Check if UFW (Uncomplicated Firewall) is installed
-        subprocess.check_call(['ufw', '--version'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError:
-        print("UFW is not installed. Installing it...")
-        subprocess.call(['sudo', 'apt', 'update'])
-        subprocess.call(['sudo', 'apt', 'install', 'ufw', '-y'])
-
-    # Check UFW status
-    status = subprocess.check_output(['sudo', 'ufw', 'status'], text=True)
-    return "Status: active" in status
-    
-def enable_ufw():
-    try:
-        subprocess.run(["sudo", "ufw", "enable"], check=True)
-        print("UFW enabled.")
+        # Enable the UFW firewall
+        subprocess.run(['sudo', 'ufw', 'enable'], check=True)
+        print("Firewall enabled successfully.")
     except subprocess.CalledProcessError as e:
-        print(f"Error enabling UFW: {e}")
-        return
+        print(f"Error: {e}")
 
-def check_ssh_status():
+def disable_firewall():
     try:
-        # Check if SSH server is installed
-        subprocess.check_call(['dpkg', '-l', 'openssh-server'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return True
-    except subprocess.CalledProcessError:
-        return False
-        
-def allow_ssh():
-    try:
-        subprocess.run(["sudo", "ufw", "allow", "OpenSSH"], check=True)
-        print("SSH access allowed.")
+        # Disable the UFW firewall
+        subprocess.run(['sudo', 'ufw', 'disable'], check=True)
+        print("Firewall disabled successfully.")
     except subprocess.CalledProcessError as e:
-        print(f"Error allowing SSH: {e}")
-        return
+        print(f"Error: {e}")
 
-def is_port_open(host, port):
+def allow_ports(ports):
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(2)  # Set a timeout for the connection attempt
-            s.connect((host, port))
-        return True
-    except (socket.timeout, ConnectionRefusedError):
-        return False
-
-def allow_custom_ports(ports):
-    for port in ports:
-        try:
-            subprocess.run(["sudo", "ufw", "allow", str(port)], check=True)
-            print(f"Port {port} allowed.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error allowing port {port}: {e}")
+        # Allow specified ports through the firewall
+        for port in ports:
+            subprocess.run(['sudo', 'ufw', 'allow', str(port)], check=True)
+        print("Ports allowed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
 
 def main():
-    # Enable UFW
-    firewall_enabled = check_firewall_status()
+    while True:
+        print("\nMenu:")
+        print("1. Enable Firewall")
+        print("2. Disable Firewall")
+        print("3. Allow Custom Ports")
+        print("4. Exit")
 
-    if not firewall_enabled:
-        enable_ufw()
+        choice = input("Enter your choice (1-4): ")
 
-    # Allow SSH
-    ssh_enabled = check_ssh_status()
-
-    if not ssh_enabled:
-        allow_ssh()
-
-    # Define additional ports to allow (e.g., 80 for HTTP, 443 for HTTPS)
-    host = "localhost"
-    custom_ports = [80, 443]
-
-    # Allow custom ports
-    if is_port_open(host, custom_ports):
-        allow_custom_ports(custom_ports)
+        if choice == '1':
+            enable_firewall()
+        elif choice == '2':
+            disable_firewall()
+        elif choice == '3':
+            ports_str = input("Enter custom ports separated by commas (e.g., 80,443): ")
+            ports = [int(p.strip()) for p in ports_str.split(',')]
+            allow_ports(ports)
+        elif choice == '4':
+            print("Exiting the script. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 4.")
 
 if __name__ == "__main__":
     main()
-
