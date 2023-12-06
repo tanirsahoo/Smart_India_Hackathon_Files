@@ -63,3 +63,33 @@
 ```
 16. FireWallPol:  
 
+# Remote-Desktop-Connection:(Using ThinLinc)
+
+1. Download ThinLinc(Administrative Version) from the official website
+```
+		https://www.cendio.com/thinlinc/download/
+```
+
+2. Extract file & Open Terminal within that file itself.
+3. Run through all the steps & (choose: Master) then once it is finished
+4. Type these commands
+```
+		sudo systemctl status vsmserver
+```
+```
+		sudo systemctl status vsmagent
+```
+```
+		ifconfig
+```
+5. Then check the static ip given there (search for the keyword: inet)
+6. Then using the given static ip, open a browser(like Chrome,Edge,etc)
+```
+		static_ip:300
+```
+7. Then once connected, it will ask for the username(Ubuntu system user name) and a paswword which has to be given by you
+8. Once it is authenticated, the Remote-Desktop-Connection is established.
+9. You will be logged out of the existing session and then you will get to see the GUI in your browser, provided you are in the same local network.
+
+
+There is a way out of distrbuting work using this Remote-Desktop-Protocol by actually creating a set of sudo users.(Experimental).
