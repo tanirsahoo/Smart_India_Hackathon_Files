@@ -185,7 +185,39 @@ class EIFace:
         def show_inner(self,path):
             pass
 
-class Authorize(Window,LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,DIFace.ColorParameters):
+
+class LBuilder(LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,LIFace.WinMenu,LIFace.WinTextBox,LIFace.WinRadial):
+    def __init__(self):
+        return
+
+    def child_frame_pos(self):
+        pass
+            
+    def button_cre(self ,f ,t ,bcl):
+        pass
+
+    def label_pos(self):
+        pass
+
+    def entry_pos(self):
+        pass
+
+    def entry_erase(self,obj):
+        pass        
+
+    def radial_cre(self,frame,frame_count):
+        pass
+
+    def menu_cre(self):
+        pass
+
+    def textbox_pos(self):
+        pass
+
+
+
+
+class Authorize(Window,LBuilder,DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -263,7 +295,7 @@ class Authorize(Window,LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,DIFace.C
             self.main_frame_del()
             Orchestrate().child_frame_pos()
 
-class Orchestrate(Window,LIFace.WinFrame,LIFace.WinMenu,LIFace.WinRadial,DIFace.ColorParameters):
+class Orchestrate(Window,LBuilder,DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -318,7 +350,7 @@ class Orchestrate(Window,LIFace.WinFrame,LIFace.WinMenu,LIFace.WinRadial,DIFace.
         self.main_frame_del()
         EnforcePol().child_frame_pos()
 
-class EnforcePol(Window,LIFace.WinFrame,LIFace.WinMenu,LIFace.WinTextBox,DIFace.ColorParameters):
+class EnforcePol(Window,LBuilder,DIFace.ColorParameters):
     def __init__(self):
         super().__init__()
         super().set_res()
