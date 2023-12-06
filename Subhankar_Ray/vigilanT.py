@@ -42,14 +42,6 @@ from multipledispatch import dispatch
 win=Tk()
 
 
-class SharedSpace:
-    def set_height_width(self,height,width):
-        self.height=height
-        self.width=width
-
-    def set_title(self,title):
-        self.title = title
-
 
 class DIFace:
     class ColorParameters(ABC): 
@@ -57,8 +49,16 @@ class DIFace:
         def color_loader(self):
             pass
 
+    class HeightWidthParameters:
+        def set_height_width(self,height,width):
+            self.height=height
+            self.width=width
 
-class Window(SharedSpace):
+        def set_title(self,title):
+            self.title = title
+
+
+class Window(DIFace.HeightWidthParameters):
     def __init__(self):
         super().set_height_width(500,500)
         super().set_title("Xenon")
@@ -70,7 +70,7 @@ class Window(SharedSpace):
         win.title(self.title)
 
 class LIFace:
-    class WinFrame(ABC,SharedSpace):
+    class WinFrame(ABC,DIFace.HeightWidthParameters):
         @dispatch()
         def main_frame_gen(self):
             self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height=self.height)
