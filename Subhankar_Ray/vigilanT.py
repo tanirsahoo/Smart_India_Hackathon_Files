@@ -4,7 +4,6 @@ import subprocess
 class Configure:
     def config_tk(self):
         print("Config-Chk")
-        """
         # Check if python3-tk is already installed
         try:
             subprocess.run(["python3", "-c", "import tkinter"], check=True)
@@ -17,7 +16,6 @@ class Configure:
                 print("python3-tk has been installed.")
             except subprocess.CalledProcessError:
                 print("Failed to install python3-tk. Please check your internet connection or try manually.")
-                """
 
     def config_package(self,package_name):
         try:
@@ -415,7 +413,7 @@ class EnforcePol(Window,LBuilder):
         self.textbox_frame_list[0].grid(row = 3, column = 0, columnspan = 3)
         self.textbox_frame_list[0].grid_propagate(0)
 
-        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 6,42)
+        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 4,40)
         self.textbox_pos()
 
     def menu_cre(self):
@@ -430,21 +428,24 @@ class EnforcePol(Window,LBuilder):
     def button_cre(self ,f ,t ,bcl):
         self.btn = []
 
-        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
-        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 31, pady = 34))
+        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
 
         for cursor in range(0,9):
             self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
 
 
     def secure_ssh(self):
+        print(self.height)
+        print(self.width)
+
         pol = self.FirewallPolicy()
 
         print("Secure shell ssh")
