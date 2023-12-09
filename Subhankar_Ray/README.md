@@ -93,3 +93,8 @@
 
 
 There is a way out of distrbuting work using this Remote-Desktop-Protocol by actually creating a set of sudo users.(Experimental).
+
+# Issues to solve
+1. Creation of nested groupings to form specified organizational structures
+2. Creation of new user without opening the terminals for password information and all
+3. usb for the ubuntu system itself
