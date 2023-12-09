@@ -415,7 +415,7 @@ class EnforcePol(Window,LBuilder):
         self.textbox_frame_list[0].grid(row = 3, column = 0, columnspan = 3)
         self.textbox_frame_list[0].grid_propagate(0)
 
-        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 0.0092,0.074)
+        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 0.01,0.08)
         self.textbox_pos()
 
     def menu_cre(self):
