@@ -5,4 +5,6 @@
 
 # Issues
 
-1. Solve tkinter issue 
+1. Solved tkinter issue: Check my branch documentation
+2. Must Update GUI logical structure
+3. Add the database as per the instructions 
