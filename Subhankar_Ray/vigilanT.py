@@ -65,6 +65,7 @@ class Window(DIFace.HeightWidthParameters,DIFace.ColorParameters):
         win.maxsize(self.width, self.height)
         win.minsize(self.width, self.height)
         win.title(self.title)
+        win.configure(bg="#FFFFFF")
 
 class LIFace:
     class WinFrame(ABC,DIFace.HeightWidthParameters):
@@ -76,26 +77,26 @@ class LIFace:
             self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
             return self.main_frame
 
-        @dispatch(int)
-        def main_frame_gen(self,height_factor):
-            self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=self.width ,height= self.height - height_factor)
+        @dispatch(float,float)
+        def main_frame_gen(self,height_factor,width_factor):
+            self.main_frame=Frame(win ,borderwidth=1 ,relief=SUNKEN ,width=int(self.width * width_factor) ,height= int(self.height * height_factor))
             self.main_frame.pack(fill = BOTH, expand = True)
             self.main_frame.pack_propagate(0)
             self.main_frame.place(anchor = 'center', relx = 0.5, rely = 0.5)
             return self.main_frame
     
-        @dispatch(int ,int ,int ,int ,str)
-        def child_frame_gen(self, frame_count, borderwidth, height, width, color):
+        @dispatch(int ,int ,float ,float ,str)
+        def child_frame_gen(self, frame_count, borderwidth, height_factor, width_factor, color):
             gen_frame_list = []
             for i in range(1,frame_count+1):
-                gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+                gen_frame_list.append(Frame(self.main_frame, bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=int(self.width*width_factor), height= int(self.height*height_factor)))
             return gen_frame_list
     
-        @dispatch(int ,list ,int ,int ,int ,str)
-        def child_frame_gen(self, frame_count, frame_list,  borderwidth, height, width, color):
+        @dispatch(int ,list ,int ,float ,float ,str)
+        def child_frame_gen(self, frame_count, frame_list,  borderwidth, height_factor, width_factor, color):
             gen_frame_list=[]
             for i in range(1,frame_count+1):
-                gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width=width, height=height))
+                gen_frame_list.append(Frame(frame_list[0], bg=color ,borderwidth=borderwidth, relief=SUNKEN, width= int(self.width*width_factor), height= int(self.height*height_factor)))
             return gen_frame_list
         
         @abstractmethod
@@ -111,7 +112,7 @@ class LIFace:
 
     class WinButton(ABC):
         @abstractmethod
-        def button_cre(self ,f ,t ,bcl):
+        def button_cre(self ,frame ,thickness ,backgroundcolor):
             pass
 
         def button_del(self,obj):
@@ -160,9 +161,9 @@ class LIFace:
         def menu_del(self, obj):
             obj.destroy()
 
-    class WinTextBox(ABC):
-        def textbox_cre(self,frame,ht,wd):
-            obj = Text(frame, height = ht, width = wd)
+    class WinTextBox(ABC,DIFace.HeightWidthParameters):
+        def textbox_cre(self,frame,height_factor,width_factor):
+            obj = Text(frame, height = int(self.height*height_factor), width = int(self.width*width_factor))
             return obj
 
         @abstractmethod
@@ -190,7 +191,7 @@ class LBuilder(LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,LIFace.WinMenu,L
     def child_frame_pos(self):
         pass
             
-    def button_cre(self ,f ,t ,bcl):
+    def button_cre(self ,frame ,thickness ,backgroundcolor):
         pass
 
     def label_pos(self):
@@ -232,8 +233,8 @@ class Authorize(Window,LBuilder):
         self.color_loader()
 
         self.main_frame_gen()
-        self.design_frame_list = self.child_frame_gen(2, 1, int(0.2*self.height), self.width,  self.d_grey)
-        self.frame_list = self.child_frame_gen(1, 1, int(0.6*self.height), self.width, self.white)
+        self.design_frame_list = self.child_frame_gen(2, 1, 0.2, 1.0,  self.d_grey)
+        self.frame_list = self.child_frame_gen(1, 1, 0.6, 1.0, self.white)
 
         self.design_frame_list[0].pack(side="top", expand=False)
         self.design_frame_list[0].pack_propagate(0)
@@ -308,13 +309,14 @@ class Orchestrate(Window,LBuilder):
         self.color_loader()
 
         self.menu_cre()
-        self.main_frame = self.main_frame_gen(20)
+        self.main_frame = self.main_frame_gen(0.96,1.0)
+        print(int(self.height*0.96))
 
-        self.design_frame_list = self.child_frame_gen(1, 1, 480, int(0.3*self.width), self.d_grey)
+        self.design_frame_list = self.child_frame_gen(1, 1, 0.96, 0.3, self.d_grey)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
-        self.frame_list = self.child_frame_gen(1, 1, 480, int(0.7*self.width), self.white)
+        self.frame_list = self.child_frame_gen(1, 1, 0.96, 0.7, self.white)
         self.frame_list[0].pack(side="left")
         self.frame_list[0].pack_propagate(0)
         
@@ -327,11 +329,11 @@ class Orchestrate(Window,LBuilder):
         menu_obj_1.add_command(label = "Policies", command = lambda: self.orchs_exe())
         win.config(menu = menu_obj_1)
 
-    def radial_cre(self ,f, k):
+    def radial_cre(self ,frame, no_radial_btn):
         decision = IntVar()
         radial_list = []
-        for i in range(1,k+1):
-            radial_list.append(Radiobutton(f, text = "Files", activebackground = self.black, activeforeground = "green", bg = self.white, cursor = "target", value = i, variable = decision, command = lambda: self.decide(decision.get())))
+        for i in range(1,no_radial_btn+1):
+            radial_list.append(Radiobutton(frame, text = "Files", activebackground = self.black, activeforeground = "green", bg = self.white, cursor = "target", value = i, variable = decision, command = lambda: self.decide(decision.get())))
         
         radial_list[0].pack(side = "top")
         radial_list[1].pack(side = "top")
@@ -386,17 +388,17 @@ class EnforcePol(Window,LBuilder):
         self.color_loader()
         
         self.menu_cre()
-        self.main_frame_gen(20)
+        self.main_frame_gen(1.0,0.96)
         
-        self.design_frame_list = self.child_frame_gen(1, 1, self.height, int(0.3*self.width), self.d_grey)
+        self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
         self.design_frame_list[0].pack(side="left")
         self.design_frame_list[0].pack_propagate(0)
         
-        self.frame_list = self.child_frame_gen(1, 1, self.height, int(0.7*self.width), self.white)
+        self.frame_list = self.child_frame_gen(1, 1, 1.0, 0.7, self.white)
         self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
         self.frame_list[0].pack_propagate(0)
 
-        self.grid_frame_list = self.child_frame_gen(9, self.frame_list, 1, int(0.5*self.height), int(0.7*self.width), self.white)
+        self.grid_frame_list = self.child_frame_gen(9, self.frame_list, 1, 0.5, 0.7, self.white)
         
         count = 0
         for r in range(0,3):
@@ -409,11 +411,11 @@ class EnforcePol(Window,LBuilder):
         print("Frame positioned")
         self.button_cre(self.grid_frame_list , "Policy", self.white)
         
-        self.textbox_frame_list = self.child_frame_gen(1, self.frame_list, 1, int(0.5*self.height), int(0.7*self.width), self.black)
+        self.textbox_frame_list = self.child_frame_gen(1, self.frame_list, 1, 0.5, 0.7, self.black)
         self.textbox_frame_list[0].grid(row = 3, column = 0, columnspan = 3)
         self.textbox_frame_list[0].grid_propagate(0)
 
-        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 4,40)
+        self.textbox = self.textbox_cre(self.textbox_frame_list[0], 0.0092,0.074)
         self.textbox_pos()
 
     def menu_cre(self):
@@ -425,18 +427,18 @@ class EnforcePol(Window,LBuilder):
     def textbox_pos(self):
         self.textbox.pack()
 
-    def button_cre(self ,f ,t ,bcl):
+    def button_cre(self ,frame ,t ,bcl):
         self.btn = []
 
-        self.btn.append(Button(f[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
-        self.btn.append(Button(f[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(frame[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
+        self.btn.append(Button(frame[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
 
         for cursor in range(0,9):
             self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
