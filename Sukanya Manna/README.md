@@ -26,3 +26,8 @@ Twofish (fast)
 6. click --> enable|disable
 7. file encryption to be implement later on specific user file creaion policies
 8. back options must be incorporated
+
+# Policy Issues
+1.  Admin creates new users must be done
+2. cryptograph: files and other directory
+3. 
