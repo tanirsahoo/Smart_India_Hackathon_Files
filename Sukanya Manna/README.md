@@ -29,5 +29,7 @@ Twofish (fast)
 
 # Policy Issues
 1.  Admin creates new users must be done
-2. cryptograph: files and other directory
-3. 
+2. cryptograph: files and other directory 
+
+# Solution-->Possible
+1. 
