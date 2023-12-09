@@ -23,3 +23,4 @@ Name | Scripts | Status
    1. We have developed the script to find the number of directories in the /home folder which directly indicates the number of active accounts/users in the server/system.
    2. The script will provide the name of the users in the form of an array.
    3. Integrate this script with the 2nd frame discussed above.
+   4. The name of the script file is list_users.py --> inside Soumyadeep Samanta folder in github.
