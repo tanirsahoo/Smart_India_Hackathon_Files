@@ -27,4 +27,4 @@ if __name__ == "__main__":
 
     # Decrypt the file using the provided password
     decrypt_file_with_password(encrypted_file_path, password)
-    delete_file(file_path)
+    delete_file(encrypted_file_path)
