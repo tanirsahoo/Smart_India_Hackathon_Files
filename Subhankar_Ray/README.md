@@ -98,3 +98,10 @@ There is a way out of distrbuting work using this Remote-Desktop-Protocol by act
 1. Creation of nested groupings to form specified organizational structures
 2. Creation of new user without opening the terminals for password information and all
 3. usb for the ubuntu system itself
+
+#Downloadables
+1. multipledispatch(this is the python package name itself and must be installed)
+	```sudo apt install python3-pip```
+	```pip install multipledispatch```
+2. python-tk package must be installed in the system
+	```sudo apt-get install python-tk```
