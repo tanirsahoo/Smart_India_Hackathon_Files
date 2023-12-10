@@ -1,52 +1,52 @@
 import subprocess
-import sqlite3
 
-def get_users_created_by_root():
-    try:
-        # Use the 'ls' command to list users created by root in the /home directory
-        process = subprocess.Popen(['ls', '/home'], stdout=subprocess.PIPE)
-        output, _ = process.communicate()
-        usernames = output.decode('utf-8').split()
-        return usernames
-    except Exception as e:
-        print(f"Error: {e}")
-        return []
+def get_sudo_created_users():
+    result = subprocess.run(['getent', 'passwd'], stdout=subprocess.PIPE, text=True)
+    user_lines = result.stdout.splitlines()
 
-def save_users_to_sql(usernames, db_filename):
-    try:
-        conn = sqlite3.connect(db_filename)
-        cursor = conn.cursor()
+    sudo_created_users = []
 
-        # Create a table to store usernames
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS root_created_users (
-                id INTEGER PRIMARY KEY,
-                username TEXT UNIQUE
-            )
-        ''')
+    for user_line in user_lines:
+        # Extract user information from the passwd file
+        user_info = user_line.split(':')
+        username = user_info[0]
+        uid = user_info[2]
 
-        # Insert usernames into the table
-        for username in usernames:
-            cursor.execute("INSERT OR IGNORE INTO root_created_users (username) VALUES (?)", (username,))
+        # Check if the user was created by a sudo user
+        if uid != '0' and int(uid) >= 1000:
+            sudo_created_users.append(username)
 
-        conn.commit()
-        print(f"Usernames created by root saved to {db_filename}")
-        conn.close()
-    except Exception as e:
-        print(f"Error: {e}")
+    return sudo_created_users
+
+def get_admin_users(usernames):
+    admin_users = []
+
+    for username in usernames:
+        # Check if the user is a member of the sudo group
+        try:
+            subprocess.run(['getent', 'group', 'sudo'], check=True, stdout=subprocess.PIPE)
+            result = subprocess.run(['id', '-nG', username], check=True, stdout=subprocess.PIPE, text=True)
+            
+            # Check if the user is a member of the sudo group
+            if 'sudo' in result.stdout.split():
+                admin_users.append(username)
+        except subprocess.CalledProcessError:
+            pass
+
+    return admin_users
+
+def main():
+    sudo_created_users = get_sudo_created_users()
+
+    print("Users Created by Sudo User:")
+    for username in sudo_created_users:
+        print(f" - {username}")
+
+    admin_users = get_admin_users(sudo_created_users)
+
+    print("\nUsers with Administrator Settings:")
+    for username in admin_users:
+        print(f" - {username}")
 
 if __name__ == "__main__":
-    # Get the list of users created by root
-    usernames = get_users_created_by_root()
-
-    # Print the usernames in the terminal
-    if usernames:
-        print("Usernames created by root:")
-        for username in usernames:
-            print(username)
-    else:
-        print("No users created by root found in the /home directory.")
-
-    # Save the usernames to an SQLite database
-    save_users_to_sql(usernames, "root_created_users.db")
-
+    main()
