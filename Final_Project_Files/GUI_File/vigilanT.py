@@ -388,7 +388,7 @@ class EnforcePol(Window,LBuilder):
         self.color_loader()
         
         self.menu_cre()
-        self.main_frame_gen(1.0,0.96)
+        self.main_frame_gen(0.96,1.0)
         
         self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
         self.design_frame_list[0].pack(side="left")
