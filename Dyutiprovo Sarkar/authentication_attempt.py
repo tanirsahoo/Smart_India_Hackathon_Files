@@ -7,7 +7,7 @@ def is_hydra_installed():
 def install_hydra():
     subprocess.run(["sudo", "apt-get", "install", "hydra"])
 
-if __name__ == "__main__":
+def few():
     if not is_hydra_installed():
         print("Hydra is not installed. Installing...")
         install_hydra()
@@ -21,6 +21,7 @@ def generate_failed_login_attempts(target_ip, username_list, password_list, num_
             subprocess.run(command, shell=True)
 
 if __name__ == "__main__":
+    few()
     target_ip = "192.168.1.1"  # Replace with the target IP address
     username_list = ["user1", "user2"]  # Replace with a list of existing usernames
     password_list = "path/to/passwords.txt"  # Replace with the path to a password list
