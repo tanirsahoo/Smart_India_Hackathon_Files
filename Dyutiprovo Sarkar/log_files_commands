@@ -1,0 +1,7 @@
+Access Log Files:
+
+    Log files are typically stored in the /var/log/ directory. Common log files include:
+        /var/log/syslog or /var/log/messages (system logs)
+        /var/log/auth.log (authentication logs)
+        /var/log/nginx/access.log (web server logs)
+        /var/log/apache2/access.log (Apache web server logs)
