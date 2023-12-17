@@ -159,8 +159,8 @@ class LIFace:
         def menu_cre(self):
             pass
 
-        def menu_del(self, obj):
-            obj.destroy()
+        def menu_del(self):
+            win.configure(menu = "")
 
     class WinTextBox(ABC,DIFace.HeightWidthParameters):
         def textbox_cre(self,frame,height_factor,width_factor):
@@ -410,7 +410,8 @@ class Orchestrate(Window,LBuilder):
         
         
         print("Frame positioned")
-        self.button_cre(self.grid_frame_list , "Policy", self.white)
+        user_count = ["User::1","User::2","User::3","User::4","User::5","User::6","User::7","User::8","User::9"]
+        self.button_cre(self.grid_frame_list , user_count, self.white)
         
         self.label_pos()
 
@@ -423,46 +424,37 @@ class Orchestrate(Window,LBuilder):
         self.active_user_label.place(x = 20, y = 40)
 
     
-    def button_cre(self ,frame ,t ,bcl):
+    def button_cre(self ,frame ,txt ,bcl):
         self.btn = []
         
-        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey)
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
         self.back_button.place(x = 35, y = 400)
 
-        self.btn.append(Button(frame[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[4], text=txt[4] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[5], text=txt[5] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[6], text=txt[6] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[7], text=txt[7] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[8], text=txt[8] ,bg=bcl , padx = 28, pady = 32))
 
         for cursor in range(0,9):
             self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
-            
-         
-
-
-    def secure_ssh(self):
-        print(self.height)
-        print(self.width)
-
-        pol = self.FirewallPolicy()
-
-        print("Secure shell ssh")
-
     
     def menu_cre(self):
         menu_obj_1 = Menu(win)
-        menu_obj_1.add_command(label = "Grouping")
-        menu_obj_1.add_command(label = "User", command = lambda: self.orchs_exe())
+        menu_obj_1.add_command(label = "User")
+        menu_obj_1.add_command(label = "Group", command = lambda: self.orchs_exe())
         win.config(menu = menu_obj_1)
 
-    def decide(self,x):
-        #Logic
-        print(x)
+    def back_entry_exe(self):
+        self.menu_del()
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Entry().child_frame_pos()
 
     def orchs_exe(self):
         print("Go to Policy Frame")
@@ -475,29 +467,6 @@ class EnforcePol(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
-
-    class FirewallPolicy:
-        def enable_ufw(self):
-            try:
-                subprocess.run(["sudo", "ufw", "enable"], check=True)
-                print("UFW enabled.")
-            except subprocess.CalledProcessError as e:
-                print(f"Error enabling UFW: {e}")
-
-        def allow_ssh(self):
-            try:
-                subprocess.run(["sudo", "ufw", "allow", "OpenSSH"], check=True)
-                print("SSH access allowed.")
-            except subprocess.CalledProcessError as e:
-                print(f"Error allowing SSH: {e}")
-
-        def allow_custom_ports(self,ports):
-            for port in ports:
-                try:
-                    subprocess.run(["sudo", "ufw", "allow", str(port)], check=True)
-                    print(f"Port {port} allowed.")
-                except subprocess.CalledProcessError as e:
-                    print(f"Error allowing port {port}: {e}")
 
     def color_loader(self):
         self.black ="#000000"
@@ -531,67 +500,66 @@ class EnforcePol(Window,LBuilder):
         
         
         print("Frame positioned")
-        self.button_cre(self.grid_frame_list , "Policy", self.white)
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9"]
+        self.button_cre(self.grid_frame_list , group_count, self.white)
+        
+        self.label_pos()
+
+    
+    def label_pos(self):
+        active_user_label_font = font.Font(size = 11)
+        
+        self.active_user_label = Label(self.design_frame_list[0], text = "Active User:", bg=self.d_grey, font = active_user_label_font)
+        
+        self.active_user_label.place(x = 20, y = 40)
         
 
     def menu_cre(self):
         menu_obj_1 = Menu(win)
-        menu_obj_1.add_command(label = "Grouping", command = lambda:self.back_orchs_exe())
-        menu_obj_1.add_command(label = "User")
+        menu_obj_1.add_command(label = "User", command = lambda:self.back_orchs_exe())
+        menu_obj_1.add_command(label = "Group")
         win.config(menu = menu_obj_1)
 
 
-    def button_cre(self ,frame ,t ,bcl):
+    def button_cre(self ,frame ,txt ,bcl):
         self.btn = []
 
-        self.btn.append(Button(frame[0], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[1], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[2], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[3], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[4], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[5], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[6], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[7], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 25, pady = 32))
-        self.btn.append(Button(frame[8], text=t ,bg=bcl ,command = lambda: self.secure_ssh(), padx = 28, pady = 32))
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
+        self.back_button.place(x = 35, y = 400)
+
+
+        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[4], text=txt[4] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[5], text=txt[5] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[6], text=txt[6] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[7], text=txt[7] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[8], text=txt[8] ,bg=bcl , padx = 21, pady = 32))
 
         for cursor in range(0,9):
             self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
 
+    def back_entry_exe(self):
+        self.menu_del()
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Entry().child_frame_pos()
 
-    def secure_ssh(self):
-        print(self.height)
-        print(self.width)
-
-        pol = self.FirewallPolicy()
-
-        print("Secure shell ssh")
-
-        """
-        # Enable UFW
-        pol.enable_ufw()
-
-        # Allow SSH
-        pol.allow_ssh()
-
-        # Define additional ports to allow (e.g., 80 for HTTP, 443 for HTTPS)
-        custom_ports = [80, 443]
-
-        # Allow custom ports
-        pol.allow_custom_ports(custom_ports)
-        """
     def back_orchs_exe(self):
-            self.child_frame_del(self.design_frame_list)
-            self.child_frame_del(self.grid_frame_list)
-            self.child_frame_del(self.frame_list)
-            self.main_frame_del()
-            Orchestrate().child_frame_pos()
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.grid_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
 
 
 if __name__=="__main__":
     #Pop-Up Configuration
     Entry().child_frame_pos()
     win.mainloop()
-
 
 
 
