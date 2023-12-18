@@ -1,0 +1,29 @@
+import subprocess
+
+def disable_usb_for_user(username, vendor_id):
+    try:
+        # Check if user exists
+        subprocess.run(['id', username], check=True, stdout=subprocess.PIPE)
+
+        # Find USB devices with the specified vendor ID
+        command = f"lsusb | grep '{vendor_id}' | cut -d' ' -f2-4 | sed 's/ /\\//g'"
+        usb_devices = subprocess.check_output(command, shell=True, text=True).splitlines()
+
+        # Set udev rules to deny access for the specified user
+        for device in usb_devices:
+            rule = f'SUBSYSTEM=="usb", ATTRS{id}=="{device}", MODE="000", OWNER="{username}"'
+            subprocess.run(['sudo', 'bash', '-c', f'echo {rule} >> /etc/udev/rules.d/99-usb-disable.rules'])
+
+        # Reload udev rules
+        subprocess.run(['sudo', 'udevadm', 'control', '--reload-rules'])
+        subprocess.run(['sudo', 'udevadm', 'trigger'])
+
+        print(f"USB access disabled for user {username} with vendor ID {vendor_id}")
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        print(f"Make sure the user {username} exists and the vendor ID {vendor_id} is correct.")
+
+if __name__ == "__main__":
+    # Replace 'your_username' and 'your_vendor_id' with the actual username and USB vendor ID
+    disable_usb_for_user('reyna', '0781')
