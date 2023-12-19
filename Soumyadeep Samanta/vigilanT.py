@@ -37,6 +37,9 @@ from tkinter import font
 from abc import ABC , abstractmethod
 from multipledispatch import dispatch
 import threading
+import subprocess
+import os
+import pwd
 
 
 win=Tk()
@@ -334,9 +337,20 @@ class Orchestrate(Window,LBuilder):
     def label_pos(self):
         active_user_label_font = font.Font(size = 11)
         
-        self.active_user_label = Label(self.design_frame_list[0], text = "Active User:", bg=self.d_grey, font = active_user_label_font)
+        self.active_user_label = Label(self.design_frame_list[0], text = "Privilege: User", bg=self.d_grey, font = active_user_label_font)
         
-        self.active_user_label.place(x = 20, y = 40)
+        self.active_admin_label = Label(self.design_frame_list[0], text = "Privilege: Admin", bg=self.d_grey, font = active_user_label_font)
+        
+        self.active_root_label = Label(self.design_frame_list[0], text = "Privilege: Root", bg=self.d_grey, font = active_user_label_font)
+        
+        curr_user = result = subprocess.run(["whoami"],capture_output = True, text = True).stdout.strip()
+        
+        if (curr_user == self.get_root_user()):
+             self.active_root_label.place(x = 20, y = 40)
+        elif (curr_user in self.get_admin_users(self.get_sudo_created_users())):
+             self.active_admin_label.place(x = 12, y = 40)
+        else:
+             self.active_user_label.place(x = 20, y = 40)
 
     
     def button_cre(self ,frame ,txt ,bcl):
@@ -357,6 +371,53 @@ class Orchestrate(Window,LBuilder):
 
         for cursor in range(0,9):
             self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
+    
+    
+    def get_root_user(self):
+      usr = self.get_sudo_created_users()
+      for itm in usr:
+         #username = os.getlogin()
+    	  user_info = pwd.getpwnam(itm)
+    	  uid = user_info.pw_uid
+    	  if(uid == 1000):
+    	     return itm
+
+     #print(f"The UID of user '{username}' is: {uid}")
+
+    def get_sudo_created_users(self):
+        result = subprocess.run(['getent', 'passwd'], stdout=subprocess.PIPE, text=True)
+        user_lines = result.stdout.splitlines()
+
+        sudo_created_users = []
+
+        for user_line in user_lines:
+          # Extract user information from the passwd file
+          user_info = user_line.split(':')
+          username = user_info[0]
+          uid = user_info[2]
+
+          # Check if the user was created by a sudo user
+          if uid != '0' and int(uid) >= 1000:
+              sudo_created_users.append(username)
+
+        return sudo_created_users
+
+    def get_admin_users(self,usernames):
+        admin_users = []
+
+        for username in usernames:
+           # Check if the user is a member of the sudo group
+           try:
+                 subprocess.run(['getent', 'group', 'sudo'], check=True, stdout=subprocess.PIPE)
+                 result = subprocess.run(['id', '-nG', username], check=True, stdout=subprocess.PIPE, text=True)
+            
+                  # Check if the user is a member of the sudo group
+                 if 'sudo' in result.stdout.split():
+                     admin_users.append(username)
+           except subprocess.CalledProcessError:
+                 pass
+
+        return admin_users
     
     def menu_cre(self):
         menu_obj_1 = Menu(win)
