@@ -42,7 +42,6 @@ def generate_failed_login_attempts(target_ip, username_list, password_list, num_
             command = f"hydra -l {username} -P {password_list} ssh://{target_ip}"
             
             subprocess.run(command, shell=True)
-import subprocess
 
 def block_ssh(ip_address):
     # Block incoming SSH traffic from the specified IP address
@@ -88,5 +87,5 @@ if __name__ == "__main__":
     if num_attemps_per_user > 5:
     	block_ssh(target_ip)
     
-    unblock_ssh(target_ip)
+
     
