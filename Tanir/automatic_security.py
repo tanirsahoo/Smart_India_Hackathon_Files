@@ -9,7 +9,7 @@ def update_system():
   subprocess.run("sudo apt update", shell=True, check=True)
   subprocess.run("sudo apt upgrade -y", shell=True, check=True)
   subprocess.run("sudo apt install unattended-upgrades", shell=True, check=True)
-  subprocess.run("sudo unattended-upgrades --enable-automatic-kernel-upgrade", shell=True, check=True)
+  #subprocess.run("sudo unattended-upgrades --enable-automatic-kernel-upgrade", shell=True, check=True)
   return 1
 
 def database_update(time_give):
@@ -61,6 +61,9 @@ def main():
     check_d = update_system()
     print(check_d)
     if(check_d == 1):
+       epoch = datetime(1970, 1, 1)
+       current_time = datetime.now()
+       total_days = (current_time - epoch).days
        total_days = str(total_days)
        database_update(total_days)
     else:
