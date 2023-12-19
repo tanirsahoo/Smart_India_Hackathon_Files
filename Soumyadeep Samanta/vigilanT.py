@@ -36,11 +36,10 @@ from tkinter import ttk
 from tkinter import font
 from abc import ABC , abstractmethod
 from multipledispatch import dispatch
+import threading
 
 
 win=Tk()
-
-
 
 class DIFace:
     class ColorParameters: 
@@ -212,91 +211,7 @@ class LBuilder(LIFace.WinFrame,LIFace.WinButton,LIFace.WinEntry,LIFace.WinMenu,L
 
     def textbox_pos(self):
         pass
-
-
-
-'''
-class Authorize(Window,LBuilder):
-    def __init__(self):
-        super().__init__()
-        super().set_res()
-    
-    
-    def color_loader(self):
-        self.black ="#000000"
-        self.white = "#FFFFFF"
-        self.grey = "#808080"
-        self.d_grey = "#008080"
-        self.l_grey = "#CDCDCD"
-
-
-    def child_frame_pos(self):
-        self.color_loader()
-
-        self.main_frame_gen()
-        self.design_frame_list = self.child_frame_gen(2, 1, 0.2, 1.0,  self.d_grey)
-        self.frame_list = self.child_frame_gen(1, 1, 0.6, 1.0, self.white)
-
-        self.design_frame_list[0].pack(side="top", expand=False)
-        self.design_frame_list[0].pack_propagate(0)
         
-        self.frame_list[0].pack(side="top", expand=False)
-        self.frame_list[0].pack_propagate(0)
-
-        self.design_frame_list[1].pack(side="top", expand=False)
-        self.design_frame_list[1].pack_propagate(0)
-        print("Frame positioned")
-        
-        #self.entry_pos()
-        
-        self.button_cre(self.frame_list[0] ,"Login", self.white)
-        print("Button positioned")
-    
-
-
-    def entry_pos(self):
-        self.entry_list = self.entry_cre(self.frame_list[0], 3, "Bitter", self.l_grey, 1, self.grey)
-        self.entry_list[0].insert(0,"Username")
-        self.entry_list[0].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[0]))
-        self.entry_list[0].pack()
-        self.entry_list[0].place(anchor = 'center', relx = 0.5, rely = 0.2)
-        
-        self.entry_list[1].insert(0,"Role")
-        self.entry_list[1].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[1]))
-        self.entry_list[1].pack()
-        self.entry_list[1].place(anchor = 'center', relx = 0.5, rely = 0.4)
-
-        self.entry_list[2].insert(0,"Password")
-        self.entry_list[2].bind("<FocusIn>", lambda event: self.entry_erase(self.entry_list[2]))
-        self.entry_list[2].pack()
-        self.entry_list[2].place(anchor = 'center', relx = 0.5, rely = 0.6)
-        
-        print("Entry positioned")
-
-    def entry_erase(self,obj):
-        obj.delete(0, "end")
-        obj.configure(fg = self.black)
-
-    def button_cre(self ,f ,t ,bcl):
-        btn1 = Button(f ,text=t ,bg=bcl ,command = lambda: self.auth_exe())
-        btn1.pack()
-        btn1.place(anchor = 'center', relx = 0.5, rely = 0.8)
-
-    def auth_exe(self):
-        #Auth-Script
-        print("Executing-Auth-Script")
-        z = 1
-        if z:
-            print("Authenticated")
-            self.child_frame_del(self.design_frame_list)
-            self.child_frame_del(self.frame_list)
-            self.main_frame_del()
-            Orchestrate().child_frame_pos()
-            
-'''
-
-
-
 
 
 class Entry(Window,LBuilder):
@@ -430,7 +345,7 @@ class Orchestrate(Window,LBuilder):
         self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
         self.back_button.place(x = 35, y = 400)
 
-        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 25, pady = 32))
+        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 25, pady = 32, command = lambda: self.execute_next_win()))
         self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 25, pady = 32))
         self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 25, pady = 32))
         self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 25, pady = 32))
@@ -462,6 +377,11 @@ class Orchestrate(Window,LBuilder):
         self.child_frame_del(self.frame_list)
         self.main_frame_del()
         EnforcePol().child_frame_pos()
+        
+    def execute_next_win(self):
+        win_thread = threading.Thread(target = win_exe_2)
+        win_thread.start()
+        win_thread.join()
 
 class EnforcePol(Window,LBuilder):
     def __init__(self):
@@ -528,7 +448,7 @@ class EnforcePol(Window,LBuilder):
         self.back_button.place(x = 35, y = 400)
 
 
-        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 21, pady = 32))
+        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 21, pady = 32, command = lambda: self.execute_next_win()))
         self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 21, pady = 32))
         self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 21, pady = 32))
         self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 21, pady = 32))
@@ -554,7 +474,20 @@ class EnforcePol(Window,LBuilder):
         self.child_frame_del(self.frame_list)
         self.main_frame_del()
         Orchestrate().child_frame_pos()
+        
+    def execute_next_win(self):
+        win_thread = threading.Thread(target = win_exe_1)
+        win_thread.start()
+        win_thread.join()
 
+       
+def win_exe_1():
+       win_1 = Tk()
+       win_1.mainloop()
+       
+def win_exe_2():
+       win_2 = Tk()
+       win_2.mainloop()
 
 if __name__=="__main__":
     #Pop-Up Configuration
