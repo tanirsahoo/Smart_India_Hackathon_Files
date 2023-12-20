@@ -1,0 +1,8 @@
+Kaizen is a gui based appplication for individual os hardening. Xenon comprises of numerous self explanatory unique policies each adhering to the standards of the CIS benchmarks.
+The team comprises of:
+1. Subhankar Ray
+2. Tanir Sahoo
+3. Dyutiprovo Sarkar
+4. Sukanya Manna
+5. Soumyadeep Samanta
+6. Sneha Singh
