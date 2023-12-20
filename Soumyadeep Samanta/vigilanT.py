@@ -508,7 +508,7 @@ class Init_Setup(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["File Config","Software Update","Integrity Checking","4","5","6","7","8","9","10","11","12"]
+        group_count = ["Config_var_tmp","Config_var_log","Filesystem Int. Pol.","etc_issue","etc_motd","Apparmour"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -645,7 +645,7 @@ class Log_Audit(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["File Config","Software Update","Integrity Checking","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["Audiyd_Install Policy","Auditd_Service Policy","Audit_Log Policy","Audit_Delete Policy","Journald Policy","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -782,7 +782,7 @@ class System_M(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["etc Policy","etc-Policy","root policy","etc_Group Policy","etc_Shadow Policy","etc_Gshadow Policy","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -1085,7 +1085,7 @@ class Service(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Time Sync","SP Services","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","http policy","DNS Policy","NFS Policy","Telnet Policy","NIS Policy","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -1278,7 +1278,7 @@ class Config_Network(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["IP Forwarding","UFW Installed","IP Tables","NF Tables","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["Network Parameter","UFW Policy","TCP_SYN Policy","NF Tables","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
