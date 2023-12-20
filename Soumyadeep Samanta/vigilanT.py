@@ -306,7 +306,6 @@ class Orchestrate(Window,LBuilder):
     def child_frame_pos(self):
         self.color_loader()
         
-        self.menu_cre()
         self.main_frame_gen(0.96,1.0)
         
         self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
@@ -321,36 +320,21 @@ class Orchestrate(Window,LBuilder):
         
         count = 0
         for r in range(0,3):
-            for col in range(0,3):
+            for col in range(0,2):
                 self.grid_frame_list[count].grid(row = r, column = col)
                 self.grid_frame_list[count].propagate(0)
                 count = count + 1
         
         
         print("Frame positioned")
-        user_count = ["User::1","User::2","User::3","User::4","User::5","User::6","User::7","User::8","User::9"]
+        user_count = ["Init Setup","Services  ","Config Net","Log-Audit","  AAA  ","System M"]
         self.button_cre(self.grid_frame_list , user_count, self.white)
         
         self.label_pos()
 
     
     def label_pos(self):
-        active_user_label_font = font.Font(size = 11)
-        
-        self.active_user_label = Label(self.design_frame_list[0], text = "Privilege: User", bg=self.d_grey, font = active_user_label_font)
-        
-        self.active_admin_label = Label(self.design_frame_list[0], text = "Privilege: Admin", bg=self.d_grey, font = active_user_label_font)
-        
-        self.active_root_label = Label(self.design_frame_list[0], text = "Privilege: Root", bg=self.d_grey, font = active_user_label_font)
-        
-        curr_user = result = subprocess.run(["whoami"],capture_output = True, text = True).stdout.strip()
-        
-        if (curr_user == self.get_root_user()):
-             self.active_root_label.place(x = 20, y = 40)
-        elif (curr_user in self.get_admin_users(self.get_sudo_created_users())):
-             self.active_admin_label.place(x = 12, y = 40)
-        else:
-             self.active_user_label.place(x = 20, y = 40)
+        pass
 
     
     def button_cre(self ,frame ,txt ,bcl):
@@ -359,92 +343,71 @@ class Orchestrate(Window,LBuilder):
         self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
         self.back_button.place(x = 35, y = 400)
 
-        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 25, pady = 32, command = lambda: self.execute_next_win()))
-        self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[4], text=txt[4] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[5], text=txt[5] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[6], text=txt[6] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[7], text=txt[7] ,bg=bcl , padx = 25, pady = 32))
-        self.btn.append(Button(frame[8], text=txt[8] ,bg=bcl , padx = 28, pady = 32))
-
-        for cursor in range(0,9):
-            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
+        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 25, pady = 20, command = lambda: self.initial_setup()))
+        self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 20, pady = 20, command = lambda: self.service()))
+        self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 20, pady = 20, command = lambda: self.config_network()))
+        self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 20, pady = 20, command = lambda: self.log_audit()))
+        self.btn.append(Button(frame[4], text=txt[4] ,bg=bcl , padx = 25, pady = 20, command = lambda: self.aaa()))
+        self.btn.append(Button(frame[5], text=txt[5] ,bg=bcl , padx = 20, pady = 20, command = lambda: self.system_m()))
+        
+        
+        self.btn[0].grid(row = 0, column = 0, sticky = "nsew", pady = 25, padx = 20)
+        self.btn[1].grid(row = 0, column = 1, sticky = "nsew", pady = 20, padx = 20)
+        self.btn[2].grid(row = 1, column = 0, sticky = "nsew", pady = 20, padx = 20)
+        self.btn[3].grid(row = 1, column = 1, sticky = "nsew", pady = 20, padx = 20)
+        self.btn[4].grid(row = 2, column = 0, sticky = "nsew", pady = 25, padx = 20)
+        self.btn[5].grid(row = 2, column = 2, sticky = "nsew", pady = 20, padx = 20)
     
-    
-    def get_root_user(self):
-      usr = self.get_sudo_created_users()
-      for itm in usr:
-         #username = os.getlogin()
-    	  user_info = pwd.getpwnam(itm)
-    	  uid = user_info.pw_uid
-    	  if(uid == 1000):
-    	     return itm
-
-     #print(f"The UID of user '{username}' is: {uid}")
-
-    def get_sudo_created_users(self):
-        result = subprocess.run(['getent', 'passwd'], stdout=subprocess.PIPE, text=True)
-        user_lines = result.stdout.splitlines()
-
-        sudo_created_users = []
-
-        for user_line in user_lines:
-          # Extract user information from the passwd file
-          user_info = user_line.split(':')
-          username = user_info[0]
-          uid = user_info[2]
-
-          # Check if the user was created by a sudo user
-          if uid != '0' and int(uid) >= 1000:
-              sudo_created_users.append(username)
-
-        return sudo_created_users
-
-    def get_admin_users(self,usernames):
-        admin_users = []
-
-        for username in usernames:
-           # Check if the user is a member of the sudo group
-           try:
-                 subprocess.run(['getent', 'group', 'sudo'], check=True, stdout=subprocess.PIPE)
-                 result = subprocess.run(['id', '-nG', username], check=True, stdout=subprocess.PIPE, text=True)
-            
-                  # Check if the user is a member of the sudo group
-                 if 'sudo' in result.stdout.split():
-                     admin_users.append(username)
-           except subprocess.CalledProcessError:
-                 pass
-
-        return admin_users
-    
-    def menu_cre(self):
-        menu_obj_1 = Menu(win)
-        menu_obj_1.add_command(label = "User")
-        menu_obj_1.add_command(label = "Group", command = lambda: self.orchs_exe())
-        win.config(menu = menu_obj_1)
 
     def back_entry_exe(self):
-        self.menu_del()
         self.child_frame_del(self.design_frame_list)
         self.child_frame_del(self.frame_list)
         self.main_frame_del()
         Entry().child_frame_pos()
 
-    def orchs_exe(self):
+    def initial_setup(self):
         print("Go to Policy Frame")
         self.child_frame_del(self.design_frame_list)
         self.child_frame_del(self.frame_list)
         self.main_frame_del()
-        EnforcePol().child_frame_pos()
+        Init_Setup().child_frame_pos()
         
-    def execute_next_win(self):
-        win_thread = threading.Thread(target = win_exe_2)
-        win_thread.start()
-        win_thread.join()
+    def service(self):
+        print("Go to Policy Frame")
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Service().child_frame_pos()
+        
+    def config_network(self):
+        print("Go to Policy Frame")
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Config_Network().child_frame_pos() 
+        
+    def log_audit(self):
+        print("Go to Policy Frame")
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Log_Audit().child_frame_pos()
+        
+    def aaa(self):
+        print("Go to Policy Frame")
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        AAA().child_frame_pos()
+        
+    def system_m(self):
+        print("Go to Policy Frame")
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        System_M().child_frame_pos()
 
-class EnforcePol(Window,LBuilder):
+class Init_Setup(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
@@ -459,7 +422,6 @@ class EnforcePol(Window,LBuilder):
     def child_frame_pos(self):
         self.color_loader()
         
-        self.menu_cre()
         self.main_frame_gen(0.96,1.0)
         
         self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
@@ -470,19 +432,39 @@ class EnforcePol(Window,LBuilder):
         self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
         self.frame_list[0].pack_propagate(0)
 
-        self.grid_frame_list = self.child_frame_gen(9, self.frame_list, 1, 0.5, 0.7, self.white)
+        self.grid_frame_list = self.child_frame_gen(2, self.frame_list, 1, 1.0, 0.35, self.white)
+        
+        self.grid_frame_list_c1 = self.child_frame_gen(8,self.grid_frame_list,1,0.125,0.35,self.white)
+        
+        self.grid_frame_list_c2 = self.child_frame_gen(8,self.grid_frame_list[1:],1,0.125,0.35, self.white)
         
         count = 0
-        for r in range(0,3):
-            for col in range(0,3):
+        for r in range(0,1):
+            for col in range(0,2):
                 self.grid_frame_list[count].grid(row = r, column = col)
                 self.grid_frame_list[count].propagate(0)
                 count = count + 1
-        
+                
+        count_1 = 0
+        for r in range(0,8):
+            for col in range(0,1):
+                self.grid_frame_list_c1[count_1].grid(row = r, column = col)
+                self.grid_frame_list_c1[count_1].propagate(0)
+                count_1 = count_1 + 1
+         
+        count_2 = 0
+        for r in range(0,8):
+            for col in range(1,2):
+                self.grid_frame_list_c2[count_2].grid(row = r, column = col)
+                self.grid_frame_list_c2[count_2].propagate(0)
+                count_2 = count_2 + 1
+
+        self.final_grid_frame_list = self.grid_frame_list_c1 + self.grid_frame_list_c2
+        count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9"]
-        self.button_cre(self.grid_frame_list , group_count, self.white)
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
 
@@ -490,16 +472,11 @@ class EnforcePol(Window,LBuilder):
     def label_pos(self):
         active_user_label_font = font.Font(size = 11)
         
-        self.active_user_label = Label(self.design_frame_list[0], text = "Active User:", bg=self.d_grey, font = active_user_label_font)
+        self.level_1 = Label(self.grid_frame_list_c1[0], text = "Level-1", bg=self.d_grey, font = active_user_label_font)
+        self.level_1.place(x = 12, y = 40)
         
-        self.active_user_label.place(x = 20, y = 40)
-        
-
-    def menu_cre(self):
-        menu_obj_1 = Menu(win)
-        menu_obj_1.add_command(label = "User", command = lambda:self.back_orchs_exe())
-        menu_obj_1.add_command(label = "Group")
-        win.config(menu = menu_obj_1)
+        self.level_2 = Label(self.grid_frame_list_c2[0], text = "Level-2", bg=self.d_grey, font = active_user_label_font)
+        self.level_2.place(x = 20, y = 40)
 
 
     def button_cre(self ,frame ,txt ,bcl):
@@ -508,26 +485,57 @@ class EnforcePol(Window,LBuilder):
         self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
         self.back_button.place(x = 35, y = 400)
 
-
-        self.btn.append(Button(frame[0], text=txt[0] ,bg=bcl , padx = 21, pady = 32, command = lambda: self.execute_next_win()))
-        self.btn.append(Button(frame[1], text=txt[1] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[2], text=txt[2] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[3], text=txt[3] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[4], text=txt[4] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[5], text=txt[5] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[6], text=txt[6] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[7], text=txt[7] ,bg=bcl , padx = 21, pady = 32))
-        self.btn.append(Button(frame[8], text=txt[8] ,bg=bcl , padx = 21, pady = 32))
-
-        for cursor in range(0,9):
-            self.btn[cursor].grid(row = cursor//3, column = cursor%3, sticky = "nsew", pady = 15, padx = 5)
+        check_list_1=[]
+	
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+	
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[0].grid(row = 0, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[1].grid(row = 0, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[2].grid(row = 1, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[3].grid(row = 1, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[4].grid(row = 2, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[6], text=txt[5] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[5].grid(row = 2, column = 1, sticky="nsew")
+        
+         
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[6].grid(row = 3, column = 0, sticky="nsew")
+         
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[7].grid(row = 3, column = 1, sticky="nsew")
+       
+        self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[8].grid(row = 4, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[12], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[9].grid(row = 4, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[13], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[10].grid(row = 5, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[14], text=txt[9] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[11].grid(row = 5, column = 1, sticky="nsew")
 
     def back_entry_exe(self):
-        self.menu_del()
         self.child_frame_del(self.design_frame_list)
         self.child_frame_del(self.frame_list)
         self.main_frame_del()
-        Entry().child_frame_pos()
+        Orchestrate().child_frame_pos()
 
     def back_orchs_exe(self):
         self.child_frame_del(self.design_frame_list)
@@ -536,19 +544,703 @@ class EnforcePol(Window,LBuilder):
         self.main_frame_del()
         Orchestrate().child_frame_pos()
         
-    def execute_next_win(self):
-        win_thread = threading.Thread(target = win_exe_1)
-        win_thread.start()
-        win_thread.join()
+class Log_Audit(Window,LBuilder):
+    def __init__(self):
+        super().__init__()
+        super().set_res()
 
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
+    def child_frame_pos(self):
+        self.color_loader()
+        
+        self.main_frame_gen(0.96,1.0)
+        
+        self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
+        self.design_frame_list[0].pack(side="left")
+        self.design_frame_list[0].pack_propagate(0)
+        
+        self.frame_list = self.child_frame_gen(1, 1, 1.0, 0.7, self.white)
+        self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
+        self.frame_list[0].pack_propagate(0)
+
+        self.grid_frame_list = self.child_frame_gen(2, self.frame_list, 1, 1.0, 0.35, self.white)
+        
+        self.grid_frame_list_c1 = self.child_frame_gen(8,self.grid_frame_list,1,0.125,0.35,self.white)
+        
+        self.grid_frame_list_c2 = self.child_frame_gen(8,self.grid_frame_list[1:],1,0.125,0.35, self.white)
+        
+        count = 0
+        for r in range(0,1):
+            for col in range(0,2):
+                self.grid_frame_list[count].grid(row = r, column = col)
+                self.grid_frame_list[count].propagate(0)
+                count = count + 1
+                
+        count_1 = 0
+        for r in range(0,8):
+            for col in range(0,1):
+                self.grid_frame_list_c1[count_1].grid(row = r, column = col)
+                self.grid_frame_list_c1[count_1].propagate(0)
+                count_1 = count_1 + 1
+         
+        count_2 = 0
+        for r in range(0,8):
+            for col in range(1,2):
+                self.grid_frame_list_c2[count_2].grid(row = r, column = col)
+                self.grid_frame_list_c2[count_2].propagate(0)
+                count_2 = count_2 + 1
+
+        self.final_grid_frame_list = self.grid_frame_list_c1 + self.grid_frame_list_c2
+        count_f = count_1 + count_2
+        
+        print("Frame positioned")
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        self.button_cre(self.final_grid_frame_list , group_count, self.white)
+        
+        self.label_pos()
+
+    
+    def label_pos(self):
+        active_user_label_font = font.Font(size = 11)
+        
+        self.level_1 = Label(self.grid_frame_list_c1[0], text = "Level-1", bg=self.d_grey, font = active_user_label_font)
+        self.level_1.place(x = 12, y = 40)
+        
+        self.level_2 = Label(self.grid_frame_list_c2[0], text = "Level-2", bg=self.d_grey, font = active_user_label_font)
+        self.level_2.place(x = 20, y = 40)
+
+
+    def button_cre(self ,frame ,txt ,bcl):
+        self.btn = []
+
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
+        self.back_button.place(x = 35, y = 400)
+
+        check_list_1=[]
+	
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+	
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[0].grid(row = 0, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[1].grid(row = 0, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[2].grid(row = 1, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[3].grid(row = 1, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[4].grid(row = 2, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[6], text=txt[5] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[5].grid(row = 2, column = 1, sticky="nsew")
+        
+         
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[6].grid(row = 3, column = 0, sticky="nsew")
+         
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[7].grid(row = 3, column = 1, sticky="nsew")
        
-def win_exe_1():
-       win_1 = Tk()
-       win_1.mainloop()
+        self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[8].grid(row = 4, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[12], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[9].grid(row = 4, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[13], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[10].grid(row = 5, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[14], text=txt[9] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[11].grid(row = 5, column = 1, sticky="nsew")
+
+    def back_entry_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+
+    def back_orchs_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.grid_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+        
+class System_M(Window,LBuilder):
+    def __init__(self):
+        super().__init__()
+        super().set_res()
+
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
+    def child_frame_pos(self):
+        self.color_loader()
+        
+        self.main_frame_gen(0.96,1.0)
+        
+        self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
+        self.design_frame_list[0].pack(side="left")
+        self.design_frame_list[0].pack_propagate(0)
+        
+        self.frame_list = self.child_frame_gen(1, 1, 1.0, 0.7, self.white)
+        self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
+        self.frame_list[0].pack_propagate(0)
+
+        self.grid_frame_list = self.child_frame_gen(2, self.frame_list, 1, 1.0, 0.35, self.white)
+        
+        self.grid_frame_list_c1 = self.child_frame_gen(8,self.grid_frame_list,1,0.125,0.35,self.white)
+        
+        self.grid_frame_list_c2 = self.child_frame_gen(8,self.grid_frame_list[1:],1,0.125,0.35, self.white)
+        
+        count = 0
+        for r in range(0,1):
+            for col in range(0,2):
+                self.grid_frame_list[count].grid(row = r, column = col)
+                self.grid_frame_list[count].propagate(0)
+                count = count + 1
+                
+        count_1 = 0
+        for r in range(0,8):
+            for col in range(0,1):
+                self.grid_frame_list_c1[count_1].grid(row = r, column = col)
+                self.grid_frame_list_c1[count_1].propagate(0)
+                count_1 = count_1 + 1
+         
+        count_2 = 0
+        for r in range(0,8):
+            for col in range(1,2):
+                self.grid_frame_list_c2[count_2].grid(row = r, column = col)
+                self.grid_frame_list_c2[count_2].propagate(0)
+                count_2 = count_2 + 1
+
+        self.final_grid_frame_list = self.grid_frame_list_c1 + self.grid_frame_list_c2
+        count_f = count_1 + count_2
+        
+        print("Frame positioned")
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        self.button_cre(self.final_grid_frame_list , group_count, self.white)
+        
+        self.label_pos()
+
+    
+    def label_pos(self):
+        active_user_label_font = font.Font(size = 11)
+        
+        self.level_1 = Label(self.grid_frame_list_c1[0], text = "Level-1", bg=self.d_grey, font = active_user_label_font)
+        self.level_1.place(x = 12, y = 40)
+        
+        self.level_2 = Label(self.grid_frame_list_c2[0], text = "Level-2", bg=self.d_grey, font = active_user_label_font)
+        self.level_2.place(x = 20, y = 40)
+
+
+    def button_cre(self ,frame ,txt ,bcl):
+        self.btn = []
+
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
+        self.back_button.place(x = 35, y = 400)
+
+        check_list_1=[]
+	
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+	
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[0].grid(row = 0, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[1].grid(row = 0, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[2].grid(row = 1, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[3].grid(row = 1, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[4].grid(row = 2, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[6], text=txt[5] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[5].grid(row = 2, column = 1, sticky="nsew")
+        
+         
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[6].grid(row = 3, column = 0, sticky="nsew")
+         
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[7].grid(row = 3, column = 1, sticky="nsew")
        
-def win_exe_2():
-       win_2 = Tk()
-       win_2.mainloop()
+        self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[8].grid(row = 4, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[12], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[9].grid(row = 4, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[13], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[10].grid(row = 5, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[14], text=txt[9] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[11].grid(row = 5, column = 1, sticky="nsew")
+
+    def back_entry_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+
+    def back_orchs_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.grid_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+        
+class AAA(Window,LBuilder):
+    def __init__(self):
+        super().__init__()
+        super().set_res()
+
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
+    def child_frame_pos(self):
+        self.color_loader()
+        
+        self.main_frame_gen(0.96,1.0)
+        
+        self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
+        self.design_frame_list[0].pack(side="left")
+        self.design_frame_list[0].pack_propagate(0)
+        
+        self.frame_list = self.child_frame_gen(1, 1, 1.0, 0.7, self.white)
+        self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
+        self.frame_list[0].pack_propagate(0)
+
+        self.grid_frame_list = self.child_frame_gen(2, self.frame_list, 1, 1.0, 0.35, self.white)
+        
+        self.grid_frame_list_c1 = self.child_frame_gen(8,self.grid_frame_list,1,0.125,0.35,self.white)
+        
+        self.grid_frame_list_c2 = self.child_frame_gen(8,self.grid_frame_list[1:],1,0.125,0.35, self.white)
+        
+        count = 0
+        for r in range(0,1):
+            for col in range(0,2):
+                self.grid_frame_list[count].grid(row = r, column = col)
+                self.grid_frame_list[count].propagate(0)
+                count = count + 1
+                
+        count_1 = 0
+        for r in range(0,8):
+            for col in range(0,1):
+                self.grid_frame_list_c1[count_1].grid(row = r, column = col)
+                self.grid_frame_list_c1[count_1].propagate(0)
+                count_1 = count_1 + 1
+         
+        count_2 = 0
+        for r in range(0,8):
+            for col in range(1,2):
+                self.grid_frame_list_c2[count_2].grid(row = r, column = col)
+                self.grid_frame_list_c2[count_2].propagate(0)
+                count_2 = count_2 + 1
+
+        self.final_grid_frame_list = self.grid_frame_list_c1 + self.grid_frame_list_c2
+        count_f = count_1 + count_2
+        
+        print("Frame positioned")
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        self.button_cre(self.final_grid_frame_list , group_count, self.white)
+        
+        self.label_pos()
+
+    
+    def label_pos(self):
+        active_user_label_font = font.Font(size = 11)
+        
+        self.level_1 = Label(self.grid_frame_list_c1[0], text = "Level-1", bg=self.d_grey, font = active_user_label_font)
+        self.level_1.place(x = 12, y = 40)
+        
+        self.level_2 = Label(self.grid_frame_list_c2[0], text = "Level-2", bg=self.d_grey, font = active_user_label_font)
+        self.level_2.place(x = 20, y = 40)
+
+
+    def button_cre(self ,frame ,txt ,bcl):
+        self.btn = []
+
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
+        self.back_button.place(x = 35, y = 400)
+
+        check_list_1=[]
+	
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+	
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[0].grid(row = 0, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[1].grid(row = 0, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[2].grid(row = 1, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[3].grid(row = 1, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[4].grid(row = 2, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[6], text=txt[5] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[5].grid(row = 2, column = 1, sticky="nsew")
+        
+         
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[6].grid(row = 3, column = 0, sticky="nsew")
+         
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[7].grid(row = 3, column = 1, sticky="nsew")
+       
+        self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[8].grid(row = 4, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[12], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[9].grid(row = 4, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[13], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[10].grid(row = 5, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[14], text=txt[9] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[11].grid(row = 5, column = 1, sticky="nsew")
+
+    def back_entry_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+
+    def back_orchs_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.grid_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+        
+
+class Service(Window,LBuilder):
+    def __init__(self):
+        super().__init__()
+        super().set_res()
+
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
+    def child_frame_pos(self):
+        self.color_loader()
+        
+        self.main_frame_gen(0.96,1.0)
+        
+        self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
+        self.design_frame_list[0].pack(side="left")
+        self.design_frame_list[0].pack_propagate(0)
+        
+        self.frame_list = self.child_frame_gen(1, 1, 1.0, 0.7, self.white)
+        self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
+        self.frame_list[0].pack_propagate(0)
+
+        self.grid_frame_list = self.child_frame_gen(2, self.frame_list, 1, 1.0, 0.35, self.white)
+        
+        self.grid_frame_list_c1 = self.child_frame_gen(8,self.grid_frame_list,1,0.125,0.35,self.white)
+        
+        self.grid_frame_list_c2 = self.child_frame_gen(8,self.grid_frame_list[1:],1,0.125,0.35, self.white)
+        
+        count = 0
+        for r in range(0,1):
+            for col in range(0,2):
+                self.grid_frame_list[count].grid(row = r, column = col)
+                self.grid_frame_list[count].propagate(0)
+                count = count + 1
+                
+        count_1 = 0
+        for r in range(0,8):
+            for col in range(0,1):
+                self.grid_frame_list_c1[count_1].grid(row = r, column = col)
+                self.grid_frame_list_c1[count_1].propagate(0)
+                count_1 = count_1 + 1
+         
+        count_2 = 0
+        for r in range(0,8):
+            for col in range(1,2):
+                self.grid_frame_list_c2[count_2].grid(row = r, column = col)
+                self.grid_frame_list_c2[count_2].propagate(0)
+                count_2 = count_2 + 1
+
+        self.final_grid_frame_list = self.grid_frame_list_c1 + self.grid_frame_list_c2
+        count_f = count_1 + count_2
+        
+        print("Frame positioned")
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        self.button_cre(self.final_grid_frame_list , group_count, self.white)
+        
+        self.label_pos()
+
+    
+    def label_pos(self):
+        active_user_label_font = font.Font(size = 11)
+        
+        self.level_1 = Label(self.grid_frame_list_c1[0], text = "Level-1", bg=self.d_grey, font = active_user_label_font)
+        self.level_1.place(x = 12, y = 40)
+        
+        self.level_2 = Label(self.grid_frame_list_c2[0], text = "Level-2", bg=self.d_grey, font = active_user_label_font)
+        self.level_2.place(x = 20, y = 40)
+
+
+    def button_cre(self ,frame ,txt ,bcl):
+        self.btn = []
+
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
+        self.back_button.place(x = 35, y = 400)
+
+        check_list_1=[]
+	
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+	
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[0].grid(row = 0, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[1].grid(row = 0, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[2].grid(row = 1, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[3].grid(row = 1, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[4].grid(row = 2, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[6], text=txt[5] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[5].grid(row = 2, column = 1, sticky="nsew")
+        
+         
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[6].grid(row = 3, column = 0, sticky="nsew")
+         
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[7].grid(row = 3, column = 1, sticky="nsew")
+       
+        self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[8].grid(row = 4, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[12], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[9].grid(row = 4, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[13], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[10].grid(row = 5, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[14], text=txt[9] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[11].grid(row = 5, column = 1, sticky="nsew")
+
+    def back_entry_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+
+    def back_orchs_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.grid_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+        
+class Config_Network(Window,LBuilder):
+    def __init__(self):
+        super().__init__()
+        super().set_res()
+        
+    def fun1():
+        # Define the path to your batch script 
+        batch_script = "/home/subhankar/Downloads/4_1.bats" 
+ 
+        # Use subprocess to run the batch script 
+        try: 
+                subprocess.call(batch_script, shell=True) 
+        except Exception as e: 
+                print("Error:", e) 
+
+    def color_loader(self):
+        self.black ="#000000"
+        self.white = "#FFFFFF"
+        self.grey = "#808080"
+        self.d_grey = "#008080"
+        self.l_grey = "#CDCDCD"
+
+    def child_frame_pos(self):
+        self.color_loader()
+        
+        self.main_frame_gen(0.96,1.0)
+        
+        self.design_frame_list = self.child_frame_gen(1, 1, 1.0, 0.3, self.d_grey)
+        self.design_frame_list[0].pack(side="left")
+        self.design_frame_list[0].pack_propagate(0)
+        
+        self.frame_list = self.child_frame_gen(1, 1, 1.0, 0.7, self.white)
+        self.frame_list[0].pack(side="left", expand = True, fill = BOTH)
+        self.frame_list[0].pack_propagate(0)
+
+        self.grid_frame_list = self.child_frame_gen(2, self.frame_list, 1, 1.0, 0.35, self.white)
+        
+        self.grid_frame_list_c1 = self.child_frame_gen(8,self.grid_frame_list,1,0.125,0.35,self.white)
+        
+        self.grid_frame_list_c2 = self.child_frame_gen(8,self.grid_frame_list[1:],1,0.125,0.35, self.white)
+        
+        count = 0
+        for r in range(0,1):
+            for col in range(0,2):
+                self.grid_frame_list[count].grid(row = r, column = col)
+                self.grid_frame_list[count].propagate(0)
+                count = count + 1
+                
+        count_1 = 0
+        for r in range(0,8):
+            for col in range(0,1):
+                self.grid_frame_list_c1[count_1].grid(row = r, column = col)
+                self.grid_frame_list_c1[count_1].propagate(0)
+                count_1 = count_1 + 1
+         
+        count_2 = 0
+        for r in range(0,8):
+            for col in range(1,2):
+                self.grid_frame_list_c2[count_2].grid(row = r, column = col)
+                self.grid_frame_list_c2[count_2].propagate(0)
+                count_2 = count_2 + 1
+
+        self.final_grid_frame_list = self.grid_frame_list_c1 + self.grid_frame_list_c2
+        count_f = count_1 + count_2
+        
+        print("Frame positioned")
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        self.button_cre(self.final_grid_frame_list , group_count, self.white)
+        
+        self.label_pos()
+
+    
+    def label_pos(self):
+        active_user_label_font = font.Font(size = 11)
+        
+        self.level_1 = Label(self.grid_frame_list_c1[0], text = "Level-1", bg=self.d_grey, font = active_user_label_font)
+        self.level_1.place(x = 12, y = 40)
+        
+        self.level_2 = Label(self.grid_frame_list_c2[0], text = "Level-2", bg=self.d_grey, font = active_user_label_font)
+        self.level_2.place(x = 20, y = 40)
+
+
+    def button_cre(self ,frame ,txt ,bcl):
+        self.btn = []
+
+        self.back_button = Button(self.design_frame_list[0], text="back", bg=self.d_grey, command = lambda: self.back_entry_exe())
+        self.back_button.place(x = 35, y = 400)
+
+        check_list_1=[]
+	
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+        check_list_1.append(IntVar())
+	
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun1()))
+        self.btn[0].grid(row = 0, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[1].grid(row = 0, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[2].grid(row = 1, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[3].grid(row = 1, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[4].grid(row = 2, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[6], text=txt[5] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[5].grid(row = 2, column = 1, sticky="nsew")
+        
+         
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[6].grid(row = 3, column = 0, sticky="nsew")
+         
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[7].grid(row = 3, column = 1, sticky="nsew")
+       
+        self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[8].grid(row = 4, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[12], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[9].grid(row = 4, column = 1, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[13], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[10].grid(row = 5, column = 0, sticky="nsew")
+        
+        self.btn.append(Checkbutton(frame[14], text=txt[9] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn[11].grid(row = 5, column = 1, sticky="nsew")
+
+    def back_entry_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+
+    def back_orchs_exe(self):
+        self.child_frame_del(self.design_frame_list)
+        self.child_frame_del(self.grid_frame_list)
+        self.child_frame_del(self.frame_list)
+        self.main_frame_del()
+        Orchestrate().child_frame_pos()
+
+
 
 if __name__=="__main__":
     #Pop-Up Configuration
