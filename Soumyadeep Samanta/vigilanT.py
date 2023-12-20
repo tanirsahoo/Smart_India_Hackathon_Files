@@ -251,7 +251,7 @@ class Entry(Window,LBuilder):
         self.child_frame_list_2[0].pack(side="top")
         self.child_frame_list_2[0].pack_propagate(0)
         
-        txt = ["next","quit"]
+        txt = ["NEXT","QUIT"]
         
         print("Frame positioned")
         self.button_cre(self.child_frame_list_2[0],txt,self.white)
@@ -261,9 +261,9 @@ class Entry(Window,LBuilder):
         
     
     def label_pos(self):
-        head_label_font = font.Font(size = 15)
+        head_label_font = font.Font(size = 30)
         
-        self.head_label = Label(self.child_frame_list_1[0], text = "Policy", bg=self.white, font = head_label_font)
+        self.head_label = Label(self.child_frame_list_1[0], text = "Kaizen \n ", bg=self.white, font = head_label_font)
         
         self.head_label.place(x = 40, y = 60)
     
@@ -411,6 +411,51 @@ class Init_Setup(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
+        
+    def fun1(self):
+        # Define the path to your batch script 
+        bat_script = "/home/tanir/Downloads/1_1_1.bats" 
+ 
+        # Use subprocess to run the batch script 
+        result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+        else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+                
+    def fun2(self):
+         # Define the path to your batch script 
+         bat_script = "/home/tanir/Downloads/1_1_2.bats" 
+ 
+         # Use subprocess to run the batch script 
+         result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+         if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+         else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+                
+    def fun3(self):
+         # Define the path to your batch script 
+         bat_script = "/home/tanir/Downloads/1_1_3.bats" 
+ 
+         # Use subprocess to run the batch script 
+         result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+         if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+         else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+
+
+
 
     def color_loader(self):
         self.black ="#000000"
@@ -463,7 +508,7 @@ class Init_Setup(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["File Config","Software Update","Integrity Checking","4","5","6","7","8","9","10","11","12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -494,13 +539,13 @@ class Init_Setup(Window,LBuilder):
         check_list_1.append(IntVar())
         check_list_1.append(IntVar())
 	
-        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun1()))
         self.btn[0].grid(row = 0, column = 0, sticky="nsew")
         
-        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun2()))
         self.btn[1].grid(row = 0, column = 1, sticky="nsew")
         
-        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun3()))
         self.btn[2].grid(row = 1, column = 0, sticky="nsew")
         
         self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
@@ -600,7 +645,7 @@ class Log_Audit(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["File Config","Software Update","Integrity Checking","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -960,6 +1005,34 @@ class Service(Window,LBuilder):
     def __init__(self):
         super().__init__()
         super().set_res()
+        
+    def fun1(self):
+        # Define the path to your batch script 
+        bat_script = "/home/tanir/Downloads/2_2_1.bats" 
+ 
+        # Use subprocess to run the batch script 
+        result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+        else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+                
+    def fun2(self):
+         # Define the path to your batch script 
+         bat_script = "/home/tanir/Downloads/2_2_2.bats" 
+ 
+         # Use subprocess to run the batch script 
+         result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+         if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+         else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
 
     def color_loader(self):
         self.black ="#000000"
@@ -1012,7 +1085,7 @@ class Service(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Time Sync","SP Services","Group::9","Group::10","Group::11","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -1062,10 +1135,10 @@ class Service(Window,LBuilder):
         self.btn[5].grid(row = 2, column = 1, sticky="nsew")
         
          
-        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[9], text=txt[6] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun1()))
         self.btn[6].grid(row = 3, column = 0, sticky="nsew")
          
-        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[10], text=txt[7] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun2()))
         self.btn[7].grid(row = 3, column = 1, sticky="nsew")
        
         self.btn.append(Checkbutton(frame[11], text=txt[8] ,onvalue =1, offvalue = 0, height =3, width =15))
@@ -1098,15 +1171,61 @@ class Config_Network(Window,LBuilder):
         super().__init__()
         super().set_res()
         
-    def fun1():
+    def fun1(self):
         # Define the path to your batch script 
-        batch_script = "/home/subhankar/Downloads/4_1.bats" 
+        bat_script = "/home/tanir/Downloads/3_1_1.bats" 
  
         # Use subprocess to run the batch script 
-        try: 
-                subprocess.call(batch_script, shell=True) 
-        except Exception as e: 
-                print("Error:", e) 
+        result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+        else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+                
+    def fun2(self):
+        # Define the path to your batch script 
+        bat_script = "/home/tanir/Downloads/3_1_2.bats" 
+ 
+        # Use subprocess to run the batch script 
+        result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+        else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+                
+    def fun3(self):
+        # Define the path to your batch script 
+        bat_script = "/home/tanir/Downloads/3_1_3.bats" 
+ 
+        # Use subprocess to run the batch script 
+        result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+        else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
+                
+    def fun4(self):
+        # Define the path to your batch script 
+        bat_script = "/home/tanir/Downloads/3_1_4.bats" 
+ 
+        # Use subprocess to run the batch script 
+        result=subprocess.run(['bats', bat_script], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+                print("Bats file executed successfully")
+                print("Output:\n", result.stdout)
+        else:
+                print("Error executing Bats file")
+                print("Error message:\n", result.stderr)
 
     def color_loader(self):
         self.black ="#000000"
@@ -1159,7 +1278,7 @@ class Config_Network(Window,LBuilder):
         count_f = count_1 + count_2
         
         print("Frame positioned")
-        group_count = ["Group::1","Group::2","Group::3","Group::4","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
+        group_count = ["IP Forwarding","UFW Installed","IP Tables","NF Tables","Group::5","Group::6","Group::7","Group::8","Group::9","Group::10","Group::11","Group::12"]
         self.button_cre(self.final_grid_frame_list , group_count, self.white)
         
         self.label_pos()
@@ -1193,13 +1312,13 @@ class Config_Network(Window,LBuilder):
         self.btn.append(Checkbutton(frame[1], text=txt[0] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun1()))
         self.btn[0].grid(row = 0, column = 0, sticky="nsew")
         
-        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[2], text=txt[1] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun2()))
         self.btn[1].grid(row = 0, column = 1, sticky="nsew")
         
-        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[3], text=txt[2] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun3()))
         self.btn[2].grid(row = 1, column = 0, sticky="nsew")
         
-        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15))
+        self.btn.append(Checkbutton(frame[4], text=txt[3] ,onvalue =1, offvalue = 0, height =3, width =15, command=lambda: self.fun4()))
         self.btn[3].grid(row = 1, column = 1, sticky="nsew")
         
         self.btn.append(Checkbutton(frame[5], text=txt[4] ,onvalue =1, offvalue = 0, height =3, width =15))
@@ -1246,6 +1365,3 @@ if __name__=="__main__":
     #Pop-Up Configuration
     Entry().child_frame_pos()
     win.mainloop()
-
-
-
